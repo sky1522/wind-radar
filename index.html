@@ -1,158 +1,346 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Satellite Images</title>
+    <title>강수 관련 기상 자료</title>
     <style>
+        /* 세련된 글꼴 및 전반적인 스타일 설정 */
         body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+            color: #333;
         }
-        .container {
-            display: flex;
-            justify-content: space-between;
-            flex-grow: 1;
+
+        h1 {
+            text-align: center;
+            color: #4A90E2;
+            font-weight: bold;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        p#timeInfo {
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #4A90E2;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
             overflow: hidden;
         }
-        .image-frame {
-            width: 49%;
-            height: 100%;
-            position: relative;
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: center;
+            font-size: 14px;
         }
-        .image-frame img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
+
+        th {
+            background-color: #4A90E2;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
         }
-        .toolbar-container {
-            display: flex;
-            justify-content: center;
-            padding: 10px;
-            background-color: #f0f0f0;
+
+        th:hover {
+            background-color: #357ABD;
         }
-        .toolbar {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            max-width: 600px;
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
         }
-        .toolbar select {
-            width: 32%;
+
+        tr:hover {
+            background-color: #f1f1f1;
         }
+
+        /* 열 간격 조정 */
+        td {
+            padding: 6px 10px;
+        }
+
     </style>
 </head>
-
 <body>
-    <div class="container">
-        <div class="image-frame">
-            <img id="satelliteImage1" alt="Satellite Image 1">
-        </div>
-        <div class="image-frame">
-            <img id="satelliteImage2" alt="Satellite Image 2">
-        </div>
-    </div>
-    <div class="toolbar-container">
-        <div class="toolbar">
-            <select id="imageURLDropdown30Min" onchange="onSelectChange(this)"></select>
-            <select id="imageURLDropdown1Hour" onchange="onSelectChange(this)"></select>
-            <select id="imageURLDropdown3Hour" onchange="onSelectChange(this)"></select>
-        </div>
-    </div>
+    <h1>경기도 실시간 강수량 집계</h1>
+    <p id="timeInfo">시간: </p>
+    <table id="weatherTable">
+        <thead>
+            <tr>
+                <th onclick="sortTable(0, 'string')">시군명</th>
+                <th onclick="sortTable(1, 'number')">STN ID</th>
+                <th onclick="sortTable(2, 'string')">지점명</th>
+                <th onclick="sortTable(3, 'number')">15분 누적 강수량</th>
+                <th onclick="sortTable(4, 'number')">60분 누적 강수량</th>
+                <th onclick="sortTable(5, 'number')">12시간 누적 강수량</th>
+                <th onclick="sortTable(6, 'number')">일 누적 강수량</th>
+            </tr>
+        </thead>
+        <tbody id="weatherData">
+            <!-- 데이터가 여기에 삽입됩니다 -->
+        </tbody>
+    </table>
 
     <script>
-        const imageURLs = [
-            "https://radar.kma.go.kr/cgi-bin/tablet2/nph-rdr_cmp_img?tm={0}&cmp=HSP&qcd=HSO&obs=ECHD&map=HR&size=800&xp=512&yp=512&zoom=0&wv=01&ht=800&color=C4&topo=1&ZRa=&ZRb=&lat=&lon=&lonlat=0&x1=&y1=&x2=&y2=&center=0&typ=0&aws=01&wt=0",
-            "https://radar.kma.go.kr/cgi-bin/tablet2/nph-rdr_cmp_img?tm={0}&cmp=HSP&qcd=HSO&obs=ECHD&map=HR&size=800&xp=500&yp=700&zoom=5&wv=02&ht=800&color=C4&topo=1&ZRa=&ZRb=&lat=&lon=&lonlat=0&x1=&y1=&x2=&y2=&center=0&typ=0&aws=01&wt=0"
-        ];
+        // 시군명 및 지점명을 STN ID에 매핑하는 객체
+        const stnInfo = {
+            "202": { "시군명": "양평", "지점명": "양평" },
+            "203": { "시군명": "이천", "지점명": "이천" },
+            "309": { "시군명": "파주", "지점명": "판문점" },
+            "326": { "시군명": "양평", "지점명": "용문산" },
+            "351": { "시군명": "양주", "지점명": "남면" },
+            "352": { "시군명": "양주", "지점명": "장흥면" },
+            "353": { "시군명": "양주", "지점명": "덕정동" },
+            "356": { "시군명": "평택", "지점명": "고덕면" },
+            "359": { "시군명": "포천", "지점명": "선단동" },
+            "360": { "시군명": "포천", "지점명": "내촌면" },
+            "361": { "시군명": "포천", "지점명": "영중면" },
+            "364": { "시군명": "성남", "지점명": "분당구" },
+            "365": { "시군명": "안양", "지점명": "석수동" },
+            "366": { "시군명": "의왕", "지점명": "오전동" },
+            "367": { "시군명": "시흥", "지점명": "신현동" },
+            "369": { "시군명": "군포", "지점명": "수리산길" },
+            "370": { "시군명": "용인", "지점명": "이동묵리" },
+            "371": { "시군명": "용인", "지점명": "기흥구갈" },
+            "372": { "시군명": "양주", "지점명": "은현면" },
+            "373": { "시군명": "양주", "지점명": "남방" },
+            "374": { "시군명": "평택", "지점명": "청북" },
+            "376": { "시군명": "광명", "지점명": "광명노온" },
+            "377": { "시군명": "안양", "지점명": "안양만안" },
+            "427": { "시군명": "김포", "지점명": "김포장기" },
+            "428": { "시군명": "하남", "지점명": "하남덕풍" },
+            "430": { "시군명": "수원", "지점명": "경기" },
+            "431": { "시군명": "의정부", "지점명": "신곡" },
+            "432": { "시군명": "화성", "지점명": "향남" },
+            "433": { "시군명": "부천", "지점명": "부천" },
+            "434": { "시군명": "안양", "지점명": "안양" },
+            "435": { "시군명": "안산", "지점명": "고잔" },
+            "436": { "시군명": "용인", "지점명": "처인역삼" },
+            "437": { "시군명": "광명", "지점명": "광명" },
+            "438": { "시군명": "군포", "지점명": "군포" },
+            "439": { "시군명": "화성", "지점명": "진안" },
+            "440": { "시군명": "이천", "지점명": "설봉" },
+            "441": { "시군명": "김포", "지점명": "김포" },
+            "442": { "시군명": "광주", "지점명": "지월" },
+            "443": { "시군명": "안성", "지점명": "보개" },
+            "444": { "시군명": "하남", "지점명": "하남" },
+            "446": { "시군명": "오산", "지점명": "남촌" },
+            "447": { "시군명": "여주", "지점명": "북내" },
+            "448": { "시군명": "여주", "지점명": "산북" },
+            "449": { "시군명": "양평", "지점명": "옥천" },
+            "450": { "시군명": "고양", "지점명": "주교" },
+            "451": { "시군명": "남양주", "지점명": "오남" },
+            "452": { "시군명": "포천", "지점명": "신북" },
+            "453": { "시군명": "광명", "지점명": "소하" },
+            "454": { "시군명": "동두천", "지점명": "하봉암" },
+            "99": { "시군명": "파주", "지점명": "파주" },
+            "456": { "시군명": "연천", "지점명": "연천" },
+            "457": { "시군명": "하남", "지점명": "춘궁" },
+            "458": { "시군명": "광주", "지점명": "퇴촌" },
+            "459": { "시군명": "광주", "지점명": "오포" },
+            "460": { "시군명": "광주", "지점명": "실촌" },
+            "461": { "시군명": "이천", "지점명": "마장" },
+            "462": { "시군명": "이천", "지점명": "모가" },
+            "464": { "시군명": "여주", "지점명": "점동" },
+            "465": { "시군명": "여주", "지점명": "가남" },
+            "466": { "시군명": "여주", "지점명": "금사" },
+            "467": { "시군명": "안성", "지점명": "양성" },
+            "468": { "시군명": "안성", "지점명": "서운" },
+            "469": { "시군명": "안성", "지점명": "일죽" },
+            "471": { "시군명": "평택", "지점명": "송탄" },
+            "473": { "시군명": "포천", "지점명": "가산" },
+            "474": { "시군명": "포천", "지점명": "영북" },
+            "475": { "시군명": "포천", "지점명": "관인" },
+            "476": { "시군명": "포천", "지점명": "화현" },
+            "477": { "시군명": "동두천", "지점명": "상패" },
+            "478": { "시군명": "연천", "지점명": "왕징" },
+            "479": { "시군명": "연천", "지점명": "장남" },
+            "480": { "시군명": "연천", "지점명": "미산" },
+            "481": { "시군명": "파주", "지점명": "탄현" },
+            "482": { "시군명": "파주", "지점명": "광탄" },
+            "483": { "시군명": "파주", "지점명": "진동" },
+            "486": { "시군명": "가평", "지점명": "외서" },
+            "487": { "시군명": "김포", "지점명": "대곶" },
+            "488": { "시군명": "화성", "지점명": "송산" },
+            "489": { "시군명": "화성", "지점명": "서신" },
+            "491": { "시군명": "연천", "지점명": "군남" },
+            "492": { "시군명": "광명", "지점명": "학온동" },
+            "495": { "시군명": "안성", "지점명": "공도" },
+            "499": { "시군명": "연천", "지점명": "중면" },
+            "503": { "시군명": "파주", "지점명": "도라산" },
+            "504": { "시군명": "포천", "지점명": "포천" },
+            "505": { "시군명": "가평", "지점명": "가평조종" },
+            "506": { "시군명": "파주", "지점명": "파주금촌" },
+            "507": { "시군명": "포천", "지점명": "창수" },
+            "514": { "시군명": "안산", "지점명": "대부도" },
+            "515": { "시군명": "화성", "지점명": "운평" },
+            "516": { "시군명": "안성", "지점명": "안성" },
+            "531": { "시군명": "가평", "지점명": "가평북면" },
+            "532": { "시군명": "의정부", "지점명": "의정부" },
+            "533": { "시군명": "이천", "지점명": "백사" },
+            "534": { "시군명": "이천", "지점명": "장호원" },
+            "538": { "시군명": "연천", "지점명": "신서" },
+            "539": { "시군명": "포천", "지점명": "포천이동" },
+            "540": { "시군명": "고양", "지점명": "고양" },
+            "541": { "시군명": "남양주", "지점명": "남양주" },
+            "542": { "시군명": "가평", "지점명": "청평" },
+            "544": { "시군명": "화성", "지점명": "전곡항" },
+            "545": { "시군명": "안산", "지점명": "안산" },
+            "546": { "시군명": "광주", "지점명": "경기광주" },
+            "547": { "시군명": "양평", "지점명": "양동" },
+            "549": { "시군명": "용인", "지점명": "용인" },
+            "550": { "시군명": "오산", "지점명": "오산" },
+            "551": { "시군명": "평택", "지점명": "평택" },
+            "565": { "시군명": "시흥", "지점명": "시흥" },
+            "567": { "시군명": "파주", "지점명": "적성" },
+            "568": { "시군명": "포천", "지점명": "일동" },
+            "569": { "시군명": "구리", "지점명": "구리" },
+            "571": { "시군명": "화성", "지점명": "화성" },
+            "572": { "시군명": "성남", "지점명": "성남" },
+            "573": { "시군명": "양평", "지점명": "청운" },
+            "574": { "시군명": "여주", "지점명": "대신" },
+            "575": { "시군명": "용인", "지점명": "용인이동" },
+            "576": { "시군명": "용인", "지점명": "백암" },
+            "589": { "시군명": "고양", "지점명": "고양고봉" },
+            "590": { "시군명": "과천", "지점명": "과천" },
+            "598": { "시군명": "양주", "지점명": "양주" },
+            "599": { "시군명": "포천", "지점명": "광릉" },
+            "652": { "시군명": "연천", "지점명": "연천청산" },
+            "692": { "시군명": "연천", "지점명": "백학" },
+            "966": { "시군명": "안산", "지점명": "풍도" },
+            "967": { "시군명": "화성", "지점명": "도리도" },
+            "445": { "시군명": "의왕", "지점명": "의왕" },
+            "490": { "시군명": "연천", "지점명": "초성리" },
+            "470": { "시군명": "안성", "지점명": "고삼" },
+            "548": { "시군명": "여주", "지점명": "여주" },
+            "472": { "시군명": "평택", "지점명": "포승" },
+            "358": { "시군명": "평택", "지점명": "현덕면" },
+            "98": { "시군명": "동두천", "지점명": "동두천" },
+            "368": { "시군명": "구리", "지점명": "수택동" },
+            "375": { "시군명": "양주", "지점명": "백석읍" },
+            "355": { "시군명": "평택", "지점명": "서탄면" }
+        };
 
-        function generateImageURL(time, urlIndex) {
-            const year = time.getFullYear();
-            const month = String(time.getMonth() + 1).padStart(2, '0');
-            const day = String(time.getDate()).padStart(2, '0');
-            const hours = String(time.getHours()).padStart(2, '0');
-            const minutes = String(time.getMinutes()).padStart(2, '0');
+        // 선택된 STN ID 목록
+        const selectedStns = Object.keys(stnInfo);
 
-            const dateString = `${year}${month}${day}${hours}${minutes}`;
-            return imageURLs[urlIndex].replace("{0}", dateString);
-        }
+function fetchWeatherData() {
+    const proxyUrl = 'https://cors-anywhere.herokuapp.com/'; // 외부 프록시 서버 URL
+    const apiUrl = `https://apihub.kma.go.kr/api/typ01/cgi-bin/url/nph-aws2_min`; // 원본 API URL
+    const tm = ""; // tm 값이 없으면 현재 시간을 사용
+    const stn_id = "0";  // STN ID는 0으로 설정하여 전체 스테이션 가져옴
+    const authKey = "DMoNuRIXSjSKDbkSF_o0qg";  // 제공된 인증 키
+    const targetUrl = `${apiUrl}?tm=${tm}&stn=${stn_id}&disp=0&help=1&authKey=${authKey}`;
+    const url = proxyUrl + targetUrl;
 
-        function formatDateForDisplay(date) {
-            date.setHours(date.getHours());
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            const hours = String(date.getHours()).padStart(2, '0');
-            const minutes = String(date.getMinutes()).padStart(2, '0');
+    fetch(url)
+        .then(response => response.text())  // 응답이 텍스트 형식이므로 text()로 처리
+        .then(data => {
+            const lines = data.split('\n');
+            const dataRows = lines.slice(9);  // 실제 데이터 부분만 가져옴 (주석 라인을 건너뜀)
 
-            return `${year}년 ${month}월 ${day}일 ${hours}시 ${minutes}분`;
-        }
+            const tableBody = document.getElementById('weatherData');
+            const timeInfo = document.getElementById('timeInfo');
+            let rowsHTML = '';  // 여러 행을 한 번에 추가하기 위해 HTML 문자열을 사용
+            tableBody.innerHTML = '';  // 이전 데이터를 초기화
 
-        function updateImageURL() {
+            // 현재 시각에서 3분을 뺀 시각 계산
             const now = new Date();
-            now.setMinutes(now.getMinutes() - 2);
-            const adjustedMinutes = Math.floor(now.getUTCMinutes() / 10) * 10;
-            now.setMinutes(adjustedMinutes);
+            now.setMinutes(now.getMinutes() - 3);
 
-            const imageURL1 = generateImageURL(now, 0);
-            const imageURL2 = generateImageURL(now, 1);
-            document.getElementById('satelliteImage1').src = imageURL1;
-            document.getElementById('satelliteImage2').src = imageURL2;
+            const year = now.getFullYear().toString().slice(2); // 연도를 두 자리로 표시
+            const month = String(now.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+            const day = String(now.getDate()).padStart(2, '0');
+            const hour = String(now.getHours()).padStart(2, '0');
+            const minute = String(now.getMinutes()).padStart(2, '0');
+            const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
+            const formattedDate = `${year}-${month}-${day}(${daysOfWeek[now.getDay()]}) ${hour}:${minute}`;
+            timeInfo.textContent = `시간: ${formattedDate}`;
 
-            const intervals = [30, 60, 180];
-            const dropdownIds = ["imageURLDropdown30Min", "imageURLDropdown1Hour", "imageURLDropdown3Hour"];
-            const intervalLabels = ["30분 간격", "1시간 간격", "3시간 간격"];
-            intervals.forEach((interval, idx) => {
-                const dropdown = document.getElementById(dropdownIds[idx]);
-                dropdown.innerHTML = `<option disabled selected>${intervalLabels[idx]}</option>`;
-                for (let i = 0; i < 40; i++) {
-                    const pastTime = new Date(now);
-                    pastTime.setMinutes(now.getMinutes() - (i * interval));
-                    const pastURL = generateImageURL(pastTime, 0);
+            dataRows.forEach(row => {
+                if (row.trim() !== "" && row.startsWith("#") === false) {  // 빈 줄과 주석(#)을 제외
+                    const columns = row.trim().split(/\s+/);  // 공백을 기준으로 데이터를 나눔
+                    const stnId = columns[1];  // STN ID는 두 번째 열에 위치
 
-                    const option = document.createElement('option');
-                    option.value = JSON.stringify({time: pastTime.getTime(), url1: pastURL, url2: generateImageURL(pastTime, 1)});
-                    option.textContent = formatDateForDisplay(pastTime);
-                    dropdown.appendChild(option);
-                }
-            });
+                    // 선택한 STN ID에 해당하는 데이터만 테이블에 추가
+                    if (selectedStns.includes(stnId)) {
+                        const stnDetails = stnInfo[stnId] || { "시군명": "N/A", "지점명": "N/A" };
 
-            setTimeout(updateImageURL, 5 * 60 * 1000);
-        }
+                        // 강수량 데이터가 -50 이하인 경우 0.0으로 변경
+                        const rain15m = parseFloat(columns[10]) <= -50 ? "0.0" : columns[10];
+                        const rain60m = parseFloat(columns[11]) <= -50 ? "0.0" : columns[11];
+                        const rain12h = parseFloat(columns[12]) <= -50 ? "0.0" : columns[12];
+                        const rainDay = parseFloat(columns[13]) <= -50 ? "0.0" : columns[13];
 
-        function onSelectChange(dropdown) {
-            const selectedValue = JSON.parse(dropdown.value);
-            document.getElementById('satelliteImage1').src = selectedValue.url1;
-            document.getElementById('satelliteImage2').src = selectedValue.url2;
-            
-            // 다른 드롭다운도 동기화
-            const dropdowns = document.querySelectorAll('.toolbar select');
-            dropdowns.forEach(d => {
-                if (d !== dropdown) {
-                    const options = Array.from(d.options);
-                    const targetOption = options.find(opt => {
-                        if (opt.value) {
-                            const optValue = JSON.parse(opt.value);
-                            return optValue.time === selectedValue.time;
-                        }
-                        return false;
-                    });
-                    if (targetOption) {
-                        d.value = targetOption.value;
+                        const filteredColumns = [
+                            stnDetails["시군명"], // 시군명
+                            columns[1],           // STN ID
+                            stnDetails["지점명"], // 지점명
+                            rain15m,              // 15분 누적 강수량
+                            rain60m,              // 60분 누적 강수량
+                            rain12h,              // 12시간 누적 강수량
+                            rainDay               // 일 누적 강수량
+                        ];
+
+                        // HTML 문자열로 추가할 행을 생성
+                        rowsHTML += '<tr>';
+                        filteredColumns.forEach(col => {
+                            rowsHTML += `<td>${col}</td>`;
+                        });
+                        rowsHTML += '</tr>';
                     }
                 }
             });
+
+            // 최종적으로 한 번에 table body에 추가
+            tableBody.innerHTML = rowsHTML;
+        })
+        .catch(error => {
+            console.error('API 호출 중 오류 발생:', error);
+        });
+}
+
+
+
+
+
+
+        function sortTable(columnIndex, type) {
+            const table = document.getElementById('weatherTable');
+            const rows = Array.from(table.rows).slice(1); // 첫 번째 행(헤더)을 제외한 나머지 행을 가져옴
+            let compareFunction;
+
+            if (type === 'number') {
+                if (columnIndex === 1) {  // STN ID 열에 대해 오름차순 정렬
+                    compareFunction = (a, b) => {
+                        return parseFloat(a.cells[columnIndex].textContent) - parseFloat(b.cells[columnIndex].textContent);
+                    };
+                } else {
+                    compareFunction = (a, b) => {
+                        return parseFloat(b.cells[columnIndex].textContent) - parseFloat(a.cells[columnIndex].textContent);
+                    };
+                }
+            } else {
+                compareFunction = (a, b) => {
+                    return a.cells[columnIndex].textContent.localeCompare(b.cells[columnIndex].textContent);
+                };
+            }
+
+            rows.sort(compareFunction);
+
+            rows.forEach(row => table.tBodies[0].appendChild(row));
         }
 
-        window.onload = function() {
-            updateImageURL();
-        }
+        window.onload = fetchWeatherData;
     </script>
 </body>
 </html>
