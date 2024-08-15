@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>강수 관련 기상 자료</title>
     <style>
-        /* 세련된 글꼴 및 전반적인 스타일 설정 */
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
             margin: 20px;
@@ -63,11 +62,9 @@
             background-color: #f1f1f1;
         }
 
-        /* 열 간격 조정 */
         td {
             padding: 6px 10px;
         }
-
     </style>
 </head>
 <body>
@@ -91,7 +88,6 @@
     </table>
 
     <script>
-        // 시군명 및 지점명을 STN ID에 매핑하는 객체
         const stnInfo = {
             "202": { "시군명": "양평", "지점명": "양평" },
             "203": { "시군명": "이천", "지점명": "이천" },
@@ -230,119 +226,107 @@
             "355": { "시군명": "평택", "지점명": "서탄면" }
         };
 
-        // 선택된 STN ID 목록
         const selectedStns = Object.keys(stnInfo);
 
-function fetchWeatherData() {
-    const proxyUrl = 'https://cors-anywhere.herokuapp.com/'; // 외부 프록시 서버 URL
-    const apiUrl = `https://apihub.kma.go.kr/api/typ01/cgi-bin/url/nph-aws2_min`; // 원본 API URL
-    const tm = ""; // tm 값이 없으면 현재 시간을 사용
-    const stn_id = "0";  // STN ID는 0으로 설정하여 전체 스테이션 가져옴
-    const authKey = "DMoNuRIXSjSKDbkSF_o0qg";  // 제공된 인증 키
-    const targetUrl = `${apiUrl}?tm=${tm}&stn=${stn_id}&disp=0&help=1&authKey=${authKey}`;
-    const url = proxyUrl + targetUrl;
+        function fetchWeatherData() {
+            const proxyUrl = 'https://cors-anywhere.herokuapp.com/'; 
+            const apiUrl = `https://apihub.kma.go.kr/api/typ01/cgi-bin/url/nph-aws2_min`; 
+            const tm = ""; 
+            const stn_id = "0";  
+            const authKey = "DMoNuRIXSjSKDbkSF_o0qg"; 
+            const targetUrl = `${apiUrl}?tm=${tm}&stn=${stn_id}&disp=0&help=1&authKey=${authKey}`;
+            const url = proxyUrl + targetUrl;
 
-    // MutationObserver 설정
-    const observer = new MutationObserver((mutationsList, observer) => {
-        for (const mutation of mutationsList) {
-            if (mutation.type === 'childList') {
-                console.log('Table rows have been added or removed.');
-            }
-        }
-    });
+            const tableBody = document.getElementById('weatherData');
+            const timeInfo = document.getElementById('timeInfo');
+            const fragment = document.createDocumentFragment(); 
 
-    const tableBody = document.getElementById('weatherData');
-    const timeInfo = document.getElementById('timeInfo');
-    
-    // 테이블 본문 요소에 대해 MutationObserver 시작
-    observer.observe(tableBody, { childList: true });
+            fetch(url)
+                .then(response => response.text())
+                .then(data => {
+                    const lines = data.split('\n');
+                    const dataRows = lines.slice(9); 
 
-    fetch(url)
-        .then(response => response.text())  // 응답이 텍스트 형식이므로 text()로 처리
-        .then(data => {
-            const lines = data.split('\n');
-            const dataRows = lines.slice(9);  // 실제 데이터 부분만 가져옴 (주석 라인을 건너뜀)
+                    tableBody.innerHTML = ''; 
 
-            let rowsHTML = '';  // 여러 행을 한 번에 추가하기 위해 HTML 문자열을 사용
-            tableBody.innerHTML = '';  // 이전 데이터를 초기화
+                    const now = new Date();
+                    now.setMinutes(now.getMinutes() - 3);
 
-            // 현재 시각에서 3분을 뺀 시각 계산
-            const now = new Date();
-            now.setMinutes(now.getMinutes() - 3);
+                    const year = now.getFullYear().toString().slice(2); 
+                    const month = String(now.getMonth() + 1).padStart(2, '0');
+                    const day = String(now.getDate()).padStart(2, '0');
+                    const hour = String(now.getHours()).padStart(2, '0');
+                    const minute = String(now.getMinutes()).padStart(2, '0');
+                    const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
+                    const formattedDate = `${year}-${month}-${day}(${daysOfWeek[now.getDay()]}) ${hour}:${minute}`;
+                    timeInfo.textContent = `시간: ${formattedDate}`;
 
-            const year = now.getFullYear().toString().slice(2); // 연도를 두 자리로 표시
-            const month = String(now.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
-            const day = String(now.getDate()).padStart(2, '0');
-            const hour = String(now.getHours()).padStart(2, '0');
-            const minute = String(now.getMinutes()).padStart(2, '0');
-            const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
-            const formattedDate = `${year}-${month}-${day}(${daysOfWeek[now.getDay()]}) ${hour}:${minute}`;
-            timeInfo.textContent = `시간: ${formattedDate}`;
+                    const groupedData = {};
 
-            dataRows.forEach(row => {
-                if (row.trim() !== "" && row.startsWith("#") === false) {  // 빈 줄과 주석(#)을 제외
-                    const columns = row.trim().split(/\s+/);  // 공백을 기준으로 데이터를 나눔
-                    const stnId = columns[1];  // STN ID는 두 번째 열에 위치
+                    dataRows.forEach(row => {
+                        if (row.trim() !== "" && !row.startsWith("#")) { 
+                            const columns = row.trim().split(/\s+/); 
+                            const stnId = columns[1]; 
 
-                    // 선택한 STN ID에 해당하는 데이터만 테이블에 추가
-                    if (selectedStns.includes(stnId)) {
-                        const stnDetails = stnInfo[stnId] || { "시군명": "N/A", "지점명": "N/A" };
+                            if (selectedStns.includes(stnId)) {
+                                const stnDetails = stnInfo[stnId] || { "시군명": "N/A", "지점명": "N/A" };
 
-                        // 강수량 데이터가 -50 이하인 경우 0.0으로 변경
-                        const rain15m = parseFloat(columns[10]) <= -50 ? "0.0" : columns[10];
-                        const rain60m = parseFloat(columns[11]) <= -50 ? "0.0" : columns[11];
-                        const rain12h = parseFloat(columns[12]) <= -50 ? "0.0" : columns[12];
-                        const rainDay = parseFloat(columns[13]) <= -50 ? "0.0" : columns[13];
+                                const rainDay = parseFloat(columns[13]) <= -50 ? 0.0 : parseFloat(columns[13]);
 
+                                const key = stnDetails["시군명"];
+
+                                if (!groupedData[key] || groupedData[key].rainDay < rainDay) {
+                                    groupedData[key] = {
+                                        stnId: stnId,
+                                        시군명: stnDetails["시군명"],
+                                        지점명: stnDetails["지점명"],
+                                        rain15m: parseFloat(columns[10]) <= -50 ? "0.0" : columns[10],
+                                        rain60m: parseFloat(columns[11]) <= -50 ? "0.0" : columns[11],
+                                        rain12h: parseFloat(columns[12]) <= -50 ? "0.0" : columns[12],
+                                        rainDay: rainDay
+                                    };
+                                }
+                            }
+                        }
+                    });
+
+                    Object.values(groupedData).forEach(data => {
+                        const tr = document.createElement('tr');
                         const filteredColumns = [
-                            stnDetails["시군명"], // 시군명
-                            columns[1],           // STN ID
-                            stnDetails["지점명"], // 지점명
-                            rain15m,              // 15분 누적 강수량
-                            rain60m,              // 60분 누적 강수량
-                            rain12h,              // 12시간 누적 강수량
-                            rainDay               // 일 누적 강수량
+                            data["시군명"],
+                            data.stnId,
+                            data["지점명"],
+                            data.rain15m,
+                            data.rain60m,
+                            data.rain12h,
+                            data.rainDay.toFixed(1) // 강수량 소수점 한 자리 표시
                         ];
 
-                        // HTML 문자열로 추가할 행을 생성
-                        rowsHTML += '<tr>';
                         filteredColumns.forEach(col => {
-                            rowsHTML += `<td>${col}</td>`;
+                            const td = document.createElement('td');
+                            td.textContent = col;
+                            tr.appendChild(td);
                         });
-                        rowsHTML += '</tr>';
-                    }
-                }
-            });
 
-            // 최종적으로 한 번에 table body에 추가
-            tableBody.innerHTML = rowsHTML;
-        })
-        .catch(error => {
-            console.error('API 호출 중 오류 발생:', error);
-        });
-}
+                        fragment.appendChild(tr);
+                    });
 
-
-
-
-
-
+                    tableBody.appendChild(fragment); 
+                })
+                .catch(error => {
+                    console.error('API 호출 중 오류 발생:', error);
+                });
+        }
 
         function sortTable(columnIndex, type) {
             const table = document.getElementById('weatherTable');
-            const rows = Array.from(table.rows).slice(1); // 첫 번째 행(헤더)을 제외한 나머지 행을 가져옴
+            const rows = Array.from(table.rows).slice(1); 
             let compareFunction;
 
             if (type === 'number') {
-                if (columnIndex === 1) {  // STN ID 열에 대해 오름차순 정렬
-                    compareFunction = (a, b) => {
-                        return parseFloat(a.cells[columnIndex].textContent) - parseFloat(b.cells[columnIndex].textContent);
-                    };
-                } else {
-                    compareFunction = (a, b) => {
-                        return parseFloat(b.cells[columnIndex].textContent) - parseFloat(a.cells[columnIndex].textContent);
-                    };
-                }
+                compareFunction = (a, b) => {
+                    return parseFloat(a.cells[columnIndex].textContent) - parseFloat(b.cells[columnIndex].textContent);
+                };
             } else {
                 compareFunction = (a, b) => {
                     return a.cells[columnIndex].textContent.localeCompare(b.cells[columnIndex].textContent);
