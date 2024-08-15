@@ -242,14 +242,27 @@ function fetchWeatherData() {
     const targetUrl = `${apiUrl}?tm=${tm}&stn=${stn_id}&disp=0&help=1&authKey=${authKey}`;
     const url = proxyUrl + targetUrl;
 
+    // MutationObserver 설정
+    const observer = new MutationObserver((mutationsList, observer) => {
+        for (const mutation of mutationsList) {
+            if (mutation.type === 'childList') {
+                console.log('Table rows have been added or removed.');
+            }
+        }
+    });
+
+    const tableBody = document.getElementById('weatherData');
+    const timeInfo = document.getElementById('timeInfo');
+    
+    // 테이블 본문 요소에 대해 MutationObserver 시작
+    observer.observe(tableBody, { childList: true });
+
     fetch(url)
         .then(response => response.text())  // 응답이 텍스트 형식이므로 text()로 처리
         .then(data => {
             const lines = data.split('\n');
             const dataRows = lines.slice(9);  // 실제 데이터 부분만 가져옴 (주석 라인을 건너뜀)
 
-            const tableBody = document.getElementById('weatherData');
-            const timeInfo = document.getElementById('timeInfo');
             let rowsHTML = '';  // 여러 행을 한 번에 추가하기 위해 HTML 문자열을 사용
             tableBody.innerHTML = '';  // 이전 데이터를 초기화
 
@@ -308,6 +321,7 @@ function fetchWeatherData() {
             console.error('API 호출 중 오류 발생:', error);
         });
 }
+
 
 
 
