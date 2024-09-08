@@ -400,7 +400,7 @@
             <div id="item-content-14" x-show="tabContentActive2($el)">
               <div class="w-full max-w-xs mx-auto">
                 <input
-                  onchange="typoonName = this.value;upload n bn b "
+                  onchange="typoonName = this.value; updateSlider();"
                   type="text"
                   placeholder="태풍이름:대문자 영문으로 입력"
                   class="mb-5 flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md border-neutral-300 ring-offset-background placeholder:text-neutral-500 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"
@@ -416,6 +416,34 @@
                   <div id="view_item_17" class="h-full">
                     <img class="h-full w-full aspect-[167/164]" />
                   </div>
+                </div>
+              </div>
+            </div>
+
+            <!--해수 온도-->
+            <div class="grid grid-cols-2 items-center justify-center" id="item-content-15" x-show="tabContentActive2($el)">
+              <div class="flex items-center justify-center h-full">
+                <div id="view_item_18" class="h-full">
+                  <img class="h-full w-full aspect-[167/164]" />
+                </div>
+              </div>
+              <div class="flex items-center justify-center h-full">
+                <div id="view_item_19" class="h-full">
+                  <img class="h-full w-full aspect-[167/164]" />
+                </div>
+              </div>
+            </div>
+
+            <!--일기도-->
+            <div class="grid grid-cols-2 items-center justify-center" id="item-content-16" x-show="tabContentActive2($el)">
+              <div class="flex items-center justify-center h-full">
+                <div id="view_item_20" class="h-full">
+                  <img class="h-full w-full aspect-[167/164]" />
+                </div>
+              </div>
+              <div class="flex items-center justify-center h-full">
+                <div id="view_item_21" class="h-full">
+                  <img class="h-full w-full aspect-[167/164]" />
                 </div>
               </div>
             </div>
@@ -646,7 +674,7 @@
       let selectedTime = null;
       let tabSelected = null;
       let itemSelected = null;
-      let typoonName = "SHANSHAN";
+      let typoonName = "LEEPI";
 
       const urls = {
         screenUrl1: "https://afso.kma.go.kr/cgi/rdr/nph-rdr_cmp1_img?tm={0}&cmp=HSP&qcd=HSLP&obs=ECHD&color=C4&aws=0&acc=0&map=HC&grid=2&legend=1&size=700&itv=5&zoom_level=1&zoom_x=3350000&zoom_y=5120000&gov=",
@@ -674,6 +702,12 @@
 
         itemUrl16: "https://www.easterlywave.com/media/typhoon/ensemble/{0}/eastasia.png",
         itemUrl17: "https://www.typhoon2000.ph/multi/data/{typoon}.PNG",
+
+        itemUrl18: "https://data.kma.go.kr/CHT/EXTJ/{2}/usst_korea_anal_{0}.gif",
+        itemUrl19: "https://data.kma.go.kr/CHT/EXTJ/{2}/usst_korea_anom_{0}.gif",
+
+        itemUrl20: "https://www.weather.go.kr/w/repositary/image/cht/img/kim_surf_newsur_pa4_{0}.gif",
+        itemUrl21: "https://www.weather.go.kr/w/repositary/image/cht/img/kor1_anlmod_pb4_{0}.gif",
       };
 
       const $view_screen_1 = document.querySelector("#view_screen_1 img");
@@ -701,6 +735,12 @@
 
       const $view_item_16 = document.querySelector("#view_item_16 img");
       const $view_item_17 = document.querySelector("#view_item_17 img");
+
+      const $view_item_18 = document.querySelector("#view_item_18 img");
+      const $view_item_19 = document.querySelector("#view_item_19 img");
+
+      const $view_item_20 = document.querySelector("#view_item_20 img");
+      const $view_item_21 = document.querySelector("#view_item_21 img");
 
       // 날짜 형식 변경 YYYY-MM-DD HH:mm
       function changeDateFormat(date) {
@@ -748,7 +788,11 @@
           return `${url.replaceAll("{0}", dateString)}`;
         }
 
-        if (url.indexOf("https://www.weather.go.kr/w/repositary/image/typ/monitor/kim_typh_fcst_") !== -1 || url.indexOf("/media/typhoon/ensemble") !== -1) {
+        if (
+          url.indexOf("https://www.weather.go.kr/w/repositary/image/typ/monitor/kim_typh_fcst_") !== -1 ||
+          url.indexOf("/media/typhoon/ensemble") !== -1 ||
+          url.indexOf("https://www.weather.go.kr/w/repositary/image/cht/img/kim_surf_newsur_pa4") !== -1
+        ) {
           time = new Date(new Date(time) - 14 * 60 * 60 * 1000);
 
           const year = time.getFullYear();
@@ -760,6 +804,21 @@
           hours = String(Math.floor(time.getHours() / 6) * 6).padStart(2, "0");
 
           const dateString = `${year}${month}${day}${hours}`;
+          return `${url.replaceAll("{0}", dateString)}`;
+        } else if (url.indexOf("https://www.weather.go.kr/w/repositary/image/cht/img/kor1_anlmod_pb4") !== -1) {
+          const current = new Date(new Date() - 9 * 60 * 60 * 1000);
+          baseTime = new Date(new Date(time) - 9 * 60 * 60 * 1000);
+
+          // 이미지 생성시간 고려 10분이 안되었으면 1시간 전 이미지로 대신 노출
+          if (current - time < 10 * 60 * 1000) time = new Date(new Date(time) - 60 * 60 * 1000);
+
+          const baseyear = baseTime.getFullYear();
+          const basemonth = String(baseTime.getMonth() + 1).padStart(2, "0");
+          const baseday = String(baseTime.getDate()).padStart(2, "0");
+          const basehours = String(baseTime.getHours()).padStart(2, "0");
+
+          const dateString = `${baseyear}${basemonth}${baseday}${basehours}`;
+
           return `${url.replaceAll("{0}", dateString)}`;
         } else if (url.indexOf("https://afso.kma.go.kr/cgi/aws3/nph-aws_min_img1?obs=rn_acc") !== -1) {
           const baseTime = new Date(time);
@@ -801,6 +860,20 @@
           return `${url.replaceAll("{0}", dateString)}`;
         } else if (url.indexOf("https://www.typhoon2000.ph/multi/data/") !== -1) {
           return `${url.replaceAll("{typoon}", typoonName)}`;
+        } else if (url.indexOf("https://data.kma.go.kr/CHT/EXTJ/") !== -1) {
+          const baseTime = new Date(time);
+
+          baseTime.setDate(time.getDate() - 1);
+          baseTime.setHours(0, 0, 0, 0);
+
+          const baseyear = baseTime.getFullYear();
+          const basemonth = String(baseTime.getMonth() + 1).padStart(2, "0");
+          const baseday = String(baseTime.getDate()).padStart(2, "0");
+          const basehours = String(baseTime.getHours()).padStart(2, "0");
+          url = url.replace("{2}", `${baseyear}${basemonth}/${baseday}`);
+
+          const dateString = `${baseyear}${basemonth}${baseday}${basehours}`;
+          return `${url.replaceAll("{0}", dateString)}`;
         } else {
           const dateString = `${year}${month}${day}${hours}${minutes}`;
           return `${url.replaceAll("{0}", dateString)}&cache_bust=${new Date().getTime()}`;
@@ -911,6 +984,12 @@
 
         $view_item_16.src = generateImageURL(time, urls.itemUrl16);
         $view_item_17.src = generateImageURL(time, urls.itemUrl17);
+
+        $view_item_18.src = generateImageURL(time, urls.itemUrl18);
+        $view_item_19.src = generateImageURL(time, urls.itemUrl19);
+
+        $view_item_20.src = generateImageURL(time, urls.itemUrl20);
+        $view_item_21.src = generateImageURL(time, urls.itemUrl21);
       }
 
       function setLatestTime() {
