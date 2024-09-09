@@ -1,1062 +1,116 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>기상 관측 뷰어(가칭)</title>
-    <script src="https://unpkg.com/alpinejs" defer></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>test</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+    <link rel="stylesheet" href="./style.css" />
+    <script defer src="index.js"></script>
   </head>
-  <body class="flex items-start justify-center h-full bg-gray-50 p-4">
-    <div class="flex items-center justify-center w-full max-w-full">
-      <div
-        x-data="{
-          itemSelected: '1',
-          tabSelected: 1,
-          tabId: $id('tabs'),
-          tabButtonClicked(tabButton){
-           
-              this.tabSelected = tabButton.id.replace(this.tabId + '-', '');
-              tabSelected = this.tabSelected;
-              this.tabRepositionMarker(tabButton);
-          },
-          tabRepositionMarker(tabButton){
-              this.$refs.tabMarker.style.width=tabButton.offsetWidth + 'px';
-              this.$refs.tabMarker.style.height=tabButton.offsetHeight + 'px';
-              this.$refs.tabMarker.style.left=tabButton.offsetLeft + 'px';
-          },
-          tabContentActive(tabContent){
-              return this.tabSelected == tabContent.id.replace(this.tabId + '-content-', '');
-          },
-          tabButtonActive(tabContent){
-              const tabId = tabContent.id.split('-').slice(-1);
-              return this.tabSelected == tabId;
-          },
-          itemSelected2: '1',
-          tabSelected2: 1,
-          tabButtonClicked2(tabButton2){
-              this.tabSelected2 = tabButton2.id.replace('-select-1', '');
-          },
-          tabContentActive2(tabContent2){
-            const contentId = tabContent2.id.replace('item-content-', '');
+  <body>
+    <main class="container-fluid">
+      <div id="screenLeft"><img src="" alt="" /></div>
+      <div id="screenRight"><img src="" alt="" /></div>
+    </main>
+    <footer class="center">
+      <!-- 화면 1 ~ 4 : 각화면 초기화용-->
+      <div>
+        <button type="button" onclick="changeScreen(1)">1</button>
+        <button type="button" onclick="changeScreen(2)">2</button>
+        <button type="button" onclick="changeScreen(3)">3</button>
+        <button type="button" onclick="changeScreen(4)">4</button>
+      </div>
 
-            if(Number(this.tabSelected2) < 12 && tabContent2.id === 'each'){
-              return true
-            }
-            
-            return this.tabSelected2 == tabContent2.id.replace('item-content-', '');
-          },
-          tabButtonActive2(tabContent2){
-              const tabId2 = tabContent2.id.split('-').slice(-1);
-              return this.tabSelected2 == tabId2;
-          },
-         
-        }"
-        x-init="tabRepositionMarker($refs.tabButtons.firstElementChild);"
-        class="w-full"
-      >
-        <div class="fixed w-full left-0 z-20">
-          <div class="w-full flex justify-between">
-            <!-- 화면 탭 메뉴-->
-            <div class="flex gap-x-4 items-center max-w-md">
-              <div x-ref="tabButtons" class="relative items-center justify-center w-full h-10 flex gap-x-2 p-1 text-gray-500 bg-white border border-gray-100 rounded-lg select-none">
-                <button
-                  :id="$id(tabId)"
-                  @click="tabButtonClicked($el);"
-                  type="button"
-                  :class="{ 'bg-gray-100 text-gray-700' : tabButtonActive($el) }"
-                  class="relative z-20 px-3 inline-flex items-center justify-center w-full h-7 text-sm font-medium transition-all rounded-md cursor-pointer whitespace-nowrap"
-                >
-                  화면1
-                </button>
-                <button
-                  :id="$id(tabId)"
-                  @click="tabButtonClicked($el);"
-                  type="button"
-                  :class="{ 'bg-gray-100 text-gray-700' : tabButtonActive($el) }"
-                  class="relative z-20 px-3 inline-flex items-center justify-center w-full h-7 text-sm font-medium transition-all rounded-md cursor-pointer whitespace-nowrap"
-                >
-                  화면2
-                </button>
-                <button
-                  :id="$id(tabId)"
-                  @click="tabButtonClicked($el);"
-                  type="button"
-                  :class="{ 'bg-gray-100 text-gray-700' : tabButtonActive($el) }"
-                  class="relative z-20 px-3 inline-flex items-center justify-center w-full h-7 text-sm font-medium transition-all rounded-md cursor-pointer whitespace-nowrap"
-                >
-                  화면3
-                </button>
-                <button
-                  :id="$id(tabId)"
-                  @click="tabButtonClicked($el);"
-                  type="button"
-                  :class="{ 'bg-gray-100 text-gray-700' : tabButtonActive($el) }"
-                  class="relative z-20 px-3 inline-flex items-center justify-center w-full h-7 text-sm font-medium transition-all rounded-md cursor-pointer whitespace-nowrap"
-                >
-                  화면4
-                </button>
-                <div
-                  id="select_group"
-                  type="button"
-                  :class="{ 'bg-gray-100 text-gray-700' : tabButtonActive($el) }"
-                  class="relative z-20 px-0 inline-flex items-center justify-center w-full h-9 text-sm font-medium transition-all rounded-md cursor-pointer whitespace-nowrap"
-                ></div>
-                <div x-ref="tabMarker" class="absolute left-0 z-10 w-1/2 h-full duration-300 ease-out" x-cloak>
-                  <div class="w-full h-full bg-gray-100 rounded-md shadow-sm"></div>
-                </div>
-              </div>
+      <!-- 태풍 정보-->
+      <div>
+        <select
+          id="typoons"
+          name="select"
+          aria-label="Select"
+          required
+          onchange="changeScreen(this.options[this.selectedIndex].value)"
+        >
+          <option selected disabled value="">태풍 정보</option>
+          <option value="TP1">태풍 현황</option>
+          <option value="TP2">태풍 감시</option>
+          <option value="TP3">태풍 예측</option>
+          <option value="TP4">해수 온도</option>
+        </select>
+      </div>
 
-              <!-- 항목 선택-->
-              <div
-                x-data="{
-                          selectOpen: false,
-                          selectedItem: '',
-                          selectableItems: [
-                              {
-                                  title: '기본 화면',
-                                  value: '1',
-                                  disabled: false
-                              },
-                              {
-                                  title: '특보 현황',
-                                  value: '2',
-                                  disabled: false
-                              },
-                              {
-                                  title: '강수 유무',
-                                  value: '3',
-                                  disabled: false
-                              },
-                              {
-                                  title: '강수(60분)',
-                                  value: '4',
-                                  disabled: false
-                              },
-                              {
-                                  title: '강수(3H)',
-                                  value: '5',
-                                  disabled: false
-                              },
-                              {
-                                  title: '일강수량',
-                                  value: '6',
-                                  disabled: false
-                              },
-                              {
-                                  title: '2일강수량',
-                                  value: '7',
-                                  disabled: false
-                              },
-                              {
-                                  title: '3일강수량',
-                                  value: '8',
-                                  disabled: false
-                              },
-                              {
-                                  title: '낙뢰 영상',
-                                  value: '9',
-                                  disabled: false
-                              },
-                              {
-                                  title: '현재 기온',
-                                  value: '10',
-                                  disabled: false
-                              },
-                              {
-                                  title: '체감 온도',
-                                  value: '11',
-                                  disabled: false
-                              },
-                              {
-                                title: '태풍 현황',
-                                value: '12',
-                                disabled: false
-                              },
-                              {
-                                title: '태풍 감시',
-                                value: '13',
-                                disabled: false
-                              },
-                              {
-                                title: '태풍 예측',
-                                value: '14',
-                                disabled: false
-                              },
-                              {
-                                title: '해수 온도',
-                                value: '15',
-                                disabled: false
-                              },
-                              {
-                                title: '일기도',
-                                value: '16',
-                                disabled: false
-                              },
-                              {
-                                title: 'AWS 관측 데이터',
-                                value: '17',
-                                disabled: false
-                              }
-                          ],
-                          selectableItemActive: null,
-                          selectId: $id('select'),
-                          selectKeydownValue: '',
-                          selectKeydownTimeout: 1000,
-                          selectKeydownClearTimeout: null,
-                          selectDropdownPosition: 'bottom',
-                          selectableItemIsActive(item) {
-                              return this.selectableItemActive && this.selectableItemActive.value==item.value;
-                          },
-                          selectableItemActiveNext(){
-                              let index = this.selectableItems.indexOf(this.selectableItemActive);
-                              if(index < this.selectableItems.length-1){
-                                  this.selectableItemActive = this.selectableItems[index+1];
-                                  this.selectScrollToActiveItem();
-                              }
-                          },
-                          selectableItemActivePrevious(){
-                              let index = this.selectableItems.indexOf(this.selectableItemActive);
-                              if(index > 0){
-                                  this.selectableItemActive = this.selectableItems[index-1];
-                                  this.selectScrollToActiveItem();
-                              }
-                          },
-                          selectScrollToActiveItem(){
-                              if(this.selectableItemActive){
-                                  activeElement = document.getElementById(this.selectableItemActive.value + '-' + this.selectId)
-                                  newScrollPos = (activeElement.offsetTop + activeElement.offsetHeight) - this.$refs.selectableItemsList.offsetHeight;
-                                  if(newScrollPos > 0){
-                                      this.$refs.selectableItemsList.scrollTop=newScrollPos;
-                                  } else {
-                                      this.$refs.selectableItemsList.scrollTop=0;
-                                  }
-                              }
-                          },
-                          selectKeydown(event){
+      <!-- 항목 선택-->
+      <div>
+        <select
+          id="items"
+          name="select"
+          aria-label="Select"
+          required
+          onchange="changeScreen(this.options[this.selectedIndex].value)"
+        >
+          <option selected disabled value="">항목 정보</option>
+          <option value="item1">특보 현황</option>
+          <option value="item2">강수 유무</option>
+          <option value="item3">강수(60분)</option>
+          <option value="item4">강수(3H)</option>
+          <option value="item5">일 강수량</option>
+          <option value="item6">2일 강수량</option>
+          <option value="item7">3일 강수량</option>
+          <option value="item8">낙뢰 영상</option>
+          <option value="item9">현재 기온</option>
+          <option value="item10">체감 온도</option>
+        </select>
+      </div>
 
-                              if (event.keyCode >= 65 && event.keyCode <= 90) {
-                                  
-                                  this.selectKeydownValue += event.key;
-                                  selectedItemBestMatch = this.selectItemsFindBestMatch();
-                                  if(selectedItemBestMatch){
-                                      if(this.selectOpen){
-                                          this.selectableItemActive = selectedItemBestMatch;
-                                          this.selectScrollToActiveItem();
-                                      } else {
-                                          this.selectedItem = this.selectableItemActive = selectedItemBestMatch;
-                                      }
-                                  }
-                                  
-                                  if(this.selectKeydownValue != ''){
-                                      clearTimeout(this.selectKeydownClearTimeout);
-                                      this.selectKeydownClearTimeout = setTimeout(() => {
-                                          this.selectKeydownValue = '';
-                                      }, this.selectKeydownTimeout);
-                                  }
-                              }
-                          },
-                          selectItemsFindBestMatch(){
-                              typedValue = this.selectKeydownValue.toLowerCase();
-                              var bestMatch = null;
-                              var bestMatchIndex = -1;
-                              for (var i = 0; i < this.selectableItems.length; i++) {
-                                  var title = this.selectableItems[i].title.toLowerCase();
-                                  var index = title.indexOf(typedValue);
-                                  if (index > -1 && (bestMatchIndex == -1 || index < bestMatchIndex) && !this.selectableItems[i].disabled) {
-                                      bestMatch = this.selectableItems[i];
-                                      bestMatchIndex = index;
-                                  }
-                              }
-                              return bestMatch;
-                          },
-                          selectActive(el){
-                           
-                            this.tabSelected = String(Number(el.id.replace('-' + this.selectId, '')) + 4)
-                            this.tabRepositionMarker(document.querySelector('#select_group'));
-                          },
-                          selectPositionUpdate(){
-                              selectDropdownBottomPos = this.$refs.selectButton.getBoundingClientRect().top + this.$refs.selectButton.offsetHeight + parseInt(window.getComputedStyle(this.$refs.selectableItemsList).maxHeight);
-                              if(window.innerHeight < selectDropdownBottomPos){
-                                  this.selectDropdownPosition = 'top';
-                              } else {
-                                  this.selectDropdownPosition = 'bottom';
-                              }
-                          },
-                          updateItemData(){
-                            itemSelected = this.selectedItem.value
-                          }
-                        }"
-                x-init="
-       $watch('selectOpen', function(){
-           if(!selectedItem){ 
-               selectableItemActive=selectableItems[0];
-           } else {
-               selectableItemActive=selectedItem;
-           }
-           setTimeout(function(){
-               selectScrollToActiveItem();
-           }, 10);
-           selectPositionUpdate();
-           window.addEventListener('resize', (event) => { selectPositionUpdate(); });
-       });
-       "
-                @keydown.escape="if(selectOpen){ selectOpen=false; }"
-                @keydown.down="if(selectOpen){ selectableItemActiveNext(); } else { selectOpen=true; } event.preventDefault();"
-                @keydown.up="if(selectOpen){ selectableItemActivePrevious(); } else { selectOpen=true; } event.preventDefault();"
-                @keydown.enter="selectedItem=selectableItemActive; selectOpen=false;"
-                @keydown="selectKeydown($event)"
-              >
-                <button
-                  x-ref="selectButton"
-                  @click="selectOpen=!selectOpen"
-                  :class="{ 'focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400' : !selectOpen }"
-                  class="relative min-h-[38px] bg-white flex items-center justify-between w-40 py-2 pl-3 pr-10 text-left border rounded-md shadow-sm cursor-default border-neutral-200/70 focus:outline-none text-sm"
-                >
-                  <span x-text="selectedItem ? selectedItem.title : '기본 화면'" class="truncate">기본 화면</span>
-                  <span class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" class="w-5 h-5 text-gray-400">
-                      <path
-                        fill-rule="evenodd"
-                        d="M10 3a.75.75 0 01.55.24l3.25 3.5a.75.75 0 11-1.1 1.02L10 4.852 7.3 7.76a.75.75 0 01-1.1-1.02l3.25-3.5A.75.75 0 0110 3zm-3.76 9.2a.75.75 0 011.06.04l2.7 2.908 2.7-2.908a.75.75 0 111.1 1.02l-3.25 3.5a.75.75 0 01-1.1 0l-3.25-3.5a.75.75 0 01.04-1.06z"
-                        clip-rule="evenodd"
-                      ></path>
-                    </svg>
-                  </span>
-                </button>
-
-                <ul
-                  x-show="selectOpen"
-                  x-ref="selectableItemsList"
-                  @click.away="selectOpen = false"
-                  x-transition:enter="transition ease-out duration-50"
-                  x-transition:enter-start="opacity-0 -translate-y-1"
-                  x-transition:enter-end="opacity-100"
-                  :class="{ 'bottom-0 mb-10 ' : selectDropdownPosition == 'top', 'top-0 mt-10 ' : selectDropdownPosition == 'bottom' }"
-                  class="absolute py-1 w-40 mt-1 overflow-auto text-sm bg-white rounded-md shadow-md max-h-56 ring-1 ring-black ring-opacity-5 focus:outline-none"
-                  x-cloak
-                >
-                  <template x-for="item in selectableItems" :key="item.value">
-                    <li
-                      @click="selectedItem=item; selectOpen=false; $refs.selectButton.focus(); tabButtonClicked2($el);updateItemData($el)"
-                      :id="item.value + '-' + selectId"
-                      :data-disabled="item.disabled"
-                      :class="{ 'bg-neutral-100 text-gray-900' : selectableItemIsActive(item), '' : !selectableItemIsActive(item) }"
-                      @mousemove="selectableItemActive=item"
-                      class="relative flex items-center h-full py-2 pl-8 text-gray-700 cursor-default select-none data-[disabled]:opacity-50 data-[disabled]:pointer-events-none"
-                    >
-                      <svg
-                        x-show="selectedItem.value==item.value"
-                        class="absolute left-0 w-4 h-4 ml-2 stroke-current text-neutral-400"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      >
-                        <polyline points="20 6 9 17 4 12"></polyline>
-                      </svg>
-                      <span class="block font-medium truncate" x-text="item.title"></span>
-                    </li>
-                  </template>
-                </ul>
-              </div>
-            </div>
+      <div class="flex-type">
+        <input
+          type="datetime-local"
+          id="datePicker"
+          onblur="currentTimeInterval = setInterval(updateDatePickerDefault, 1000);jumpToDate()"
+          onclick="clearInterval(currentTimeInterval)"
+        />
+        <div>
+          <div>
+            <input
+              type="range"
+              min="0"
+              max="48"
+              value="48"
+              step="0.5"
+              id="timeSlider"
+              oninput="updateSlider(null, 'input')"
+              onchange="updateSlider(null, 'change')"
+            />
           </div>
+          <small><span>-48H</span><span>-36H</span><span>-24H</span><span>-12H</span><span>0H</span></small>
         </div>
-        <!-- 탭 레이어-->
-        <div class="relative flex items-center justify-center w-full mt-16 text-xs text-gray-400 rounded-md content">
-          <div class="relative w-full">
-            <!--태풍 현황-->
-            <div class="grid grid-cols-2 items-center justify-center" id="item-content-12" x-show="tabContentActive2($el)">
-              <div class="flex items-center justify-center h-full">
-                <div id="view_item_12" class="h-full">
-                  <img class="h-full w-full aspect-[167/164]" />
-                </div>
-              </div>
-              <div class="flex items-center justify-center h-full">
-                <div id="view_item_13" class="h-full">API가 필요한 화면</div>
-              </div>
-            </div>
+        <div id="currentTime">asdfasdfasdf</div>
+      </div>
 
-            <!--태풍 감시-->
-            <div class="grid grid-cols-2 items-center justify-center" id="item-content-13" x-show="tabContentActive2($el)">
-              <div class="flex items-center justify-center h-full">
-                <div id="view_item_14" class="h-full">
-                  <img class="h-full w-full aspect-[167/164]" />
-                </div>
-              </div>
-              <div class="flex items-center justify-center h-full">
-                <div id="view_item_15" class="h-full">
-                  <img class="h-full w-full aspect-[167/164]" />
-                </div>
-              </div>
-            </div>
+      <div>
+        <button class="outline contrast" onclick="adjustTime(-3)">-3H</button>
+        <button class="outline contrast" onclick="adjustTime(-1)">-1H</button>
+        <button class="outline contrast" onclick="adjustTime(-0.5)">-30M</button>
+        <button onclick="setLatestTime()">현재</button>
+        <button class="outline contrast" onclick="adjustTime(0.5)">+30M</button>
+        <button class="outline contrast" onclick="adjustTime(1)">+1H</button>
+        <button class="outline contrast" onclick="adjustTime(3)">+3H</button>
+      </div>
 
-            <!--태풍 예측-->
-            <div id="item-content-14" x-show="tabContentActive2($el)">
-              <div class="w-full max-w-xs mx-auto">
-                <input
-                  onchange="typoonName = this.value; updateSlider();"
-                  type="text"
-                  placeholder="태풍이름:대문자 영문으로 입력"
-                  class="mb-5 flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md border-neutral-300 ring-offset-background placeholder:text-neutral-500 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"
-                />
-              </div>
-              <div class="grid grid-cols-2 items-center justify-center">
-                <div class="flex items-center justify-center h-full">
-                  <div id="view_item_16" class="h-full">
-                    <img class="h-full w-full aspect-[167/164]" />
-                  </div>
-                </div>
-                <div class="flex items-center justify-center h-full">
-                  <div id="view_item_17" class="h-full">
-                    <img class="h-full w-full aspect-[167/164]" />
-                  </div>
-                </div>
-              </div>
-            </div>
+      <div class="control">
+        <button id="playButton" onclick="togglePlay()">재생</button>
+        <div>
+          <fieldset>
+            <input type="checkbox" id="repeatCheckbox" />
+            <label htmlFor="repeatCheckbox">반복</label>
+            <input type="checkbox" id="autoUpdateCheckbox" onchange="toggleAutoUpdate()" />
+            <label htmlFor="autoUpdateCheckbox">업데이트</label>
+          </fieldset>
 
-            <!--해수 온도-->
-            <div class="grid grid-cols-2 items-center justify-center" id="item-content-15" x-show="tabContentActive2($el)">
-              <div class="flex items-center justify-center h-full">
-                <div id="view_item_18" class="h-full">
-                  <img class="h-full w-full aspect-[167/164]" />
-                </div>
-              </div>
-              <div class="flex items-center justify-center h-full">
-                <div id="view_item_19" class="h-full">
-                  <img class="h-full w-full aspect-[167/164]" />
-                </div>
-              </div>
-            </div>
-
-            <!--일기도-->
-            <div class="grid grid-cols-2 items-center justify-center" id="item-content-16" x-show="tabContentActive2($el)">
-              <div class="flex items-center justify-center h-full">
-                <div id="view_item_20" class="h-full">
-                  <img class="h-full w-full aspect-[167/164]" />
-                </div>
-              </div>
-              <div class="flex items-center justify-center h-full">
-                <div id="view_item_21" class="h-full">
-                  <img class="h-full w-full aspect-[167/164]" />
-                </div>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-2 items-center justify-center" id="each" x-show="tabContentActive2($el)">
-              <!-- 항목별 화면-->
-              <!-- 기본 화면-->
-              <div class="flex items-center justify-center h-full" :id="$id('item-content')" x-show="tabContentActive2($el)">
-                <div id="view_item_1" class="h-full">
-                  <img class="h-full w-full aspect-[167/164]" />
-                </div>
-              </div>
-              <!-- 특보 현황-->
-              <div class="flex items-center justify-center h-full" :id="$id('item-content')" x-show="tabContentActive2($el)" x-cloak>
-                <div id="view_item_2" class="h-full">
-                  <img class="h-full w-full aspect-[167/164]" />
-                </div>
-              </div>
-              <!-- 강수 유무 -->
-              <div class="flex items-center justify-center h-full" :id="$id('item-content')" x-show="tabContentActive2($el)" x-cloak>
-                <div id="view_item_3" class="h-full">
-                  <img class="h-full w-full aspect-[167/164]" />
-                </div>
-              </div>
-              <!-- 강수(60분) -->
-              <div class="flex items-center justify-center h-full" :id="$id('item-content')" x-show="tabContentActive2($el)" x-cloak>
-                <div id="view_item_4" class="h-full">
-                  <img class="h-full w-full aspect-[167/164]" />
-                </div>
-              </div>
-              <!-- 강수(3H) -->
-              <div class="flex items-center justify-center h-full" :id="$id('item-content')" x-show="tabContentActive2($el)" x-cloak>
-                <div id="view_item_5" class="h-full">
-                  <img class="h-full w-full aspect-[167/164]" />
-                </div>
-              </div>
-              <!-- 일강수량 -->
-              <div class="flex items-center justify-center h-full" :id="$id('item-content')" x-show="tabContentActive2($el)" x-cloak>
-                <div id="view_item_6" class="h-full">
-                  <img class="h-full w-full aspect-[167/164]" />
-                </div>
-              </div>
-
-              <!-- 2일강수량 -->
-              <div class="flex items-center justify-center h-full" :id="$id('item-content')" x-show="tabContentActive2($el)" x-cloak>
-                <div id="view_item_7" class="h-full">
-                  <img class="h-full w-full aspect-[167/164]" />
-                </div>
-              </div>
-
-              <!-- 3일강수량 -->
-              <div class="flex items-center justify-center h-full" :id="$id('item-content')" x-show="tabContentActive2($el)" x-cloak>
-                <div id="view_item_8" class="h-full">
-                  <img class="h-full w-full aspect-[167/164]" />
-                </div>
-              </div>
-
-              <!-- 낙뢰 영상 -->
-              <div class="flex items-center justify-center h-full" :id="$id('item-content')" x-show="tabContentActive2($el)" x-cloak>
-                <div id="view_item_9" class="h-full">
-                  <img class="h-full w-full aspect-[167/164]" />
-                </div>
-              </div>
-
-              <!-- 현재 기온 -->
-              <div class="flex items-center justify-center h-full" :id="$id('item-content')" x-show="tabContentActive2($el)" x-cloak>
-                <div id="view_item_10" class="h-full">
-                  <img class="h-full w-full aspect-[167/164]" />
-                </div>
-              </div>
-
-              <!-- 체감 온도 -->
-              <div class="flex items-center justify-center h-full" :id="$id('item-content')" x-show="tabContentActive2($el)" x-cloak>
-                <div id="view_item_11" class="h-full">
-                  <img class="h-full w-full aspect-[167/164]" />
-                </div>
-              </div>
-
-              <!-- 화면1,2,3,4-->
-              <div class="flex items-center justify-center h-full" :id="$id(tabId + '-content')" x-show="tabContentActive($el)">
-                <div id="view_screen_1" class="h-full">
-                  <img class="h-full w-full aspect-[167/164]" />
-                </div>
-              </div>
-              <div class="flex items-center justify-center h-full" :id="$id(tabId + '-content')" x-show="tabContentActive($el)" x-cloak>
-                <div id="view_screen_2" class="h-full">
-                  <img class="h-full w-full aspect-[167/164]" />
-                </div>
-              </div>
-              <div class="flex items-center justify-center h-full" :id="$id(tabId + '-content')" x-show="tabContentActive($el)" x-cloak>
-                <div id="view_screen_3" class="h-full">
-                  <img class="h-full w-full aspect-[167/164]" />
-                </div>
-              </div>
-              <div class="flex items-center justify-center h-full" :id="$id(tabId + '-content')" x-show="tabContentActive($el)" x-cloak>
-                <div id="view_screen_4" class="h-full">
-                  <img class="h-full w-full aspect-[167/164]" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- //탭 레이어-->
-
-        <!-- 하단 컨트롤러-->
-        <div class="fixed bottom-0 w-full bg-slate-200/50 p-2">
-          <div class="flex gap-x-6 justify-center items-center">
-            <!-- 기준시간-->
-            <div>
-              <p class="font-bold text-sm">현시간 보기 & 기준시간 변경</p>
-              <input class="text-sm" type="datetime-local" id="datePicker" onblur="currentTimeInterval = setInterval(updateDatePickerDefault, 1000);jumpToDate()" onclick="clearInterval(currentTimeInterval)" />
-            </div>
-
-            <!-- 시간 변경 슬라이더-->
-            <div class="w-80">
-              <div class="text-center text-sm font-bold">
-                <span id="currentTime"></span>
-              </div>
-              <div>
-                <input
-                  oninput="updateSlider(null, 'input')"
-                  onchange="updateSlider(null, 'change')"
-                  id="timeSlider"
-                  type="range"
-                  min="0"
-                  max="48"
-                  value="48"
-                  step="0.5"
-                  class="w-full h-full appearance-none flex items-center cursor-pointer bg-transparent z-30 [&::-webkit-slider-thumb]:bg-blue-600 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-0 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:appearance-none [&::-moz-range-thumb]:bg-blue-600 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:w-2.5 [&::-moz-range-thumb]:h-2.5 [&::-moz-range-thumb]:appearance-none [&::-ms-thumb]:bg-blue-600 [&::-ms-thumb]:rounded-full [&::-ms-thumb]:border-0 [&::-ms-thumb]:w-2.5 [&::-ms-thumb]:h-2.5 [&::-ms-thumb]:appearance-none [&::-webkit-slider-runnable-track]:bg-neutral-200 [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:overflow-hidden [&::-moz-range-track]:bg-neutral-200 [&::-moz-range-track]:rounded-full [&::-ms-track]:bg-neutral-200 [&::-ms-track]:rounded-full [&::-moz-range-progress]:bg-blue-400 [&::-moz-range-progress]:rounded-full [&::-ms-fill-lower]:bg-blue-400 [&::-ms-fill-lower]:rounded-full [&::-webkit-slider-thumb]:shadow-[-999px_0px_0px_990px_#4e97ff]"
-                />
-              </div>
-              <div class="flex justify-between text-xs">
-                <span>-48h</span>
-                <span>-36h</span>
-                <span>-24h</span>
-                <span>-12h</span>
-                <span>0h</span>
-              </div>
-            </div>
-
-            <!-- 시간 변경 버튼-->
-            <div>
-              <button
-                type="button"
-                class="inline-flex items-center justify-center px-2 py-2 text-xs font-medium tracking-wide transition-colors duration-200 bg-white border rounded-md text-neutral-500 hover:text-neutral-700 border-neutral-200/70 hover:bg-neutral-100 active:bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-200/60 focus:shadow-outline"
-                onclick="adjustTime(-3)"
-              >
-                -3H
-              </button>
-              <button
-                type="button"
-                class="inline-flex items-center justify-center px-2 py-2 text-xs font-medium tracking-wide transition-colors duration-200 bg-white border rounded-md text-neutral-500 hover:text-neutral-700 border-neutral-200/70 hover:bg-neutral-100 active:bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-200/60 focus:shadow-outline"
-                onclick="adjustTime(-1)"
-              >
-                -1H
-              </button>
-              <button
-                type="button"
-                class="inline-flex items-center justify-center px-2 py-2 text-xs font-medium tracking-wide transition-colors duration-200 bg-white border rounded-md text-neutral-500 hover:text-neutral-700 border-neutral-200/70 hover:bg-neutral-100 active:bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-200/60 focus:shadow-outline"
-                onclick="adjustTime(-0.5)"
-              >
-                -30m
-              </button>
-
-              <button
-                type="button"
-                class="inline-flex items-center justify-center px-2 py-2 text-xs font-medium tracking-wide text-white transition-colors duration-200 rounded-md bg-neutral-950 hover:bg-neutral-900 focus:ring-2 focus:ring-offset-2 focus:ring-neutral-900 focus:shadow-outline focus:outline-none"
-                onclick="setLatestTime()"
-              >
-                현재
-              </button>
-
-              <button
-                type="button"
-                class="inline-flex items-center justify-center px-2 py-2 text-xs font-medium tracking-wide transition-colors duration-200 bg-white border rounded-md text-neutral-500 hover:text-neutral-700 border-neutral-200/70 hover:bg-neutral-100 active:bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-200/60 focus:shadow-outline"
-                onclick="adjustTime(0.5)"
-              >
-                +30m
-              </button>
-              <button
-                type="button"
-                class="inline-flex items-center justify-center px-2 py-2 text-xs font-medium tracking-wide transition-colors duration-200 bg-white border rounded-md text-neutral-500 hover:text-neutral-700 border-neutral-200/70 hover:bg-neutral-100 active:bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-200/60 focus:shadow-outline"
-                onclick="adjustTime(1)"
-              >
-                +1H
-              </button>
-              <button
-                type="button"
-                class="inline-flex items-center justify-center px-2 py-2 text-xs font-medium tracking-wide transition-colors duration-200 bg-white border rounded-md text-neutral-500 hover:text-neutral-700 border-neutral-200/70 hover:bg-neutral-100 active:bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-200/60 focus:shadow-outline"
-                onclick="adjustTime(3)"
-              >
-                +3H
-              </button>
-            </div>
-
-            <!-- 플레이어-->
-            <div class="flex items-center gap-x-2">
-              <button
-                id="playButton"
-                type="button"
-                onclick="togglePlay()"
-                class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium tracking-wide text-blue-600 transition-colors duration-100 bg-white border-2 border-blue-600 rounded-md hover:text-white hover:bg-blue-600"
-              >
-                재생
-              </button>
-              <div>
-                <div class="flex items-center gap-x-2">
-                  <div class="flex items-center">
-                    <input id="repeatCheckbox" type="checkbox" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-neutral-900 focus:ring-neutral-900" />
-                    <label for="checkbox-id" class="ml-2 text-sm font-medium text-gray-900">반복</label>
-                  </div>
-                  <div class="flex items-center">
-                    <input id="autoUpdateCheckbox" onchange="toggleAutoUpdate()" type="checkbox" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-neutral-900 focus:ring-neutral-900" />
-                    <label for="checkbox-id" class="ml-2 text-sm font-medium text-gray-900">업데이트</label>
-                  </div>
-                </div>
-                <div id="nextUpdateDisplay" class="text-sm text-amber-700"></div>
-              </div>
-            </div>
-          </div>
+          <div id="nextUpdateDisplay"></div>
         </div>
       </div>
-    </div>
-    <script>
-      let currentTimeInterval = null;
-      let isPlaying = false;
-      let currentTime = new Date();
-      let selectedTime = null;
-      let tabSelected = null;
-      let itemSelected = null;
-      let typoonName = "LEEPI";
-
-      const urls = {
-        screenUrl1: "https://afso.kma.go.kr/cgi/rdr/nph-rdr_cmp1_img?tm={0}&cmp=HSP&qcd=HSLP&obs=ECHD&color=C4&aws=0&acc=0&map=HC&grid=2&legend=1&size=700&itv=5&zoom_level=1&zoom_x=3350000&zoom_y=5120000&gov=",
-        screenUrl2: "https://nmsc.kma.go.kr/IMG/GK2A/AMI/PRIMARY/L1B/COMPLETE/EA/{1}/gk2a_ami_le1b_rgb-s-true_ea020lc_{0}.srv.png",
-        screenUrl3: "https://nmsc.kma.go.kr/IMG/GK2A/AMI/PRIMARY/L1B/COMPLETE/KO/{1}/gk2a_ami_le1b_enhc-wv069_ko020lc_{0}.srv.png",
-        screenUrl4: "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?tm={0}&cmp=HSP&qcd=HSO&obs=ECHD&map=E&size=800&xp=330&yp=620&zoom=5&wv=02&ht=800&color=C4&topo=1&ZRa=&ZRb=&lat=&lon=&lonlat=0&x1=&y1=&x2=&y2=&center=0&typ=0&aws=01&wt=0",
-
-        itemUrl1: "https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?tm={0}&cmp=HSP&qcd=HSO&obs=ECHD&map=HC&size=800&xp=-9999&yp=-9999&zoom=1&wv=00&ht=1500&color=C4&topo=1&ZRa=&ZRb=&lat=&lon=&lonlat=0&x1=&y1=&x2=&y2=&center=0&typ=0&aws=01&wt=0",
-        itemUrl2: "https://afso.kma.go.kr/cgi/wrn/nph-wrn7?tm={0}&lon=127&lat=37.59&range=80&size=330.00&city=1&tmef=0&tmefl={0}&name=0&out=0&wrn=W,R,C,D,O,V,T,S,Y,H&lv=0&_DT=RSW:MAPR",
-        itemUrl3: "https://afso.kma.go.kr/cgi/aws3/nph-aws_min_img1?obs=rn_ex&tm={0}&val=1&stn=1&obj=mq&map=E&grid=2&legend=1&size=330.00&itv=5&zoom_level=2&zoom_x=3200000&zoom_y=5400000&gov=&_DT=RSW:RNEX",
-        itemUrl4: "https://afso.kma.go.kr/cgi/aws3/nph-aws_min_img1?obs=rn_60m&tm={0}&val=1&stn=1&obj=mq&map=E&grid=2&legend=1&size=330.00&itv=60&zoom_level=2&zoom_x=3200000&zoom_y=5400000&gov=&_DT=RSW:RN60M",
-        itemUrl5: "https://afso.kma.go.kr/cgi/aws3/nph-aws_min_img1?obs=rn_03h&tm={0}&stn=1&obj=bn&map=E&grid=2&legend=1&size=330.00&itv=5&zoom_level=2&zoom_x=3200000&zoom_y=5400000&gov=&_DT=RSW:RN03H",
-        itemUrl6: "https://afso.kma.go.kr/cgi/aws3/nph-aws_min_img1?obs=rn_day&tm={0}&val=1&stn=1&obj=mq&map=E&grid=2&legend=1&size=330.00&itv=5&zoom_level=2&zoom_x=3200000&zoom_y=5400000&gov=&_DT=RSW:RNDAY1",
-        itemUrl7: "https://afso.kma.go.kr/cgi/aws3/nph-aws_min_img1?obs=rn_acc&tm={0}&tm_st={1}&stn=1&obj=bn&map=E&grid=2&legend=1&size=330.00&itv=5&zoom_level=2&zoom_x=3200000&zoom_y=5400000&gov=&_DT=RSW:RN02D",
-        itemUrl8: "https://afso.kma.go.kr/cgi/aws3/nph-aws_min_img1?obs=rn_acc&tm={0}&tm_st={1}&stn=1&obj=bn&map=E&grid=2&legend=1&size=330.00&itv=5&zoom_level=2&zoom_x=3200000&zoom_y=5400000&gov=&_DT=RSW:RN03D",
-        itemUrl9: "https://afso.kma.go.kr/cgi/lgt/nph-lgt_dst_img?obs=lgt_dst&tm={0}&val=1&stn=1&obj=bn&map=E&grid=2&legend=1&size=330.00&itv=30&zoom_level=2&zoom_x=3200000&zoom_y=5400000&gov=&_DT=RSW:RDRLGT",
-        itemUrl10: "https://afso.kma.go.kr/cgi/aws3/nph-aws_min_img1?obs=ta&tm={0}&val=1&stn=1&obj=mq&map=E&grid=2&legend=1&size=495.00&itv=5&zoom_level=2&zoom_x=3200000&zoom_y=5400000&gov=&_DT=RSW:TA",
-        itemUrl11: "https://afso.kma.go.kr/cgi/aws3/nph-aws_min_img1?obs=ta_chi&tm={0}&val=1&stn=1&obj=mq&map=E&grid=2&legend=1&size=495.00&itv=5&zoom_level=2&zoom_x=3200000&zoom_y=5400000&gov=&_DT=RSW:TACHI",
-
-        itemUrl12: "https://www.weather.go.kr/w/repositary/image/typ/sat/bt6_{0}.png",
-        itemUrl13: "https://afso.kma.go.kr/m/typInfo.jsp?year=2024&seq=10&tmSeq=38",
-
-        itemUrl14: "https://www.weather.go.kr/w/repositary/image/typ/monitor/kim_typh_fcst_wnd850_ft06_pa4_s000_{0}.gif",
-        itemUrl15: "https://www.weather.go.kr/w/repositary/image/typ/monitor/kim_typh_fcst_wndshr_ft06_pa4_s000_{0}.gif",
-
-        itemUrl16: "https://www.easterlywave.com/media/typhoon/ensemble/{0}/eastasia.png",
-        itemUrl17: "https://www.typhoon2000.ph/multi/data/{typoon}.PNG",
-
-        itemUrl18: "https://data.kma.go.kr/CHT/EXTJ/{2}/usst_korea_anal_{0}.gif",
-        itemUrl19: "https://data.kma.go.kr/CHT/EXTJ/{2}/usst_korea_anom_{0}.gif",
-
-        itemUrl20: "https://www.weather.go.kr/w/repositary/image/cht/img/kim_surf_newsur_pa4_{0}.gif",
-        itemUrl21: "https://www.weather.go.kr/w/repositary/image/cht/img/kor1_anlmod_pb4_{0}.gif",
-      };
-
-      const $view_screen_1 = document.querySelector("#view_screen_1 img");
-      const $view_screen_2 = document.querySelector("#view_screen_2 img");
-      const $view_screen_3 = document.querySelector("#view_screen_3 img");
-      const $view_screen_4 = document.querySelector("#view_screen_4 img");
-
-      const $view_item_1 = document.querySelector("#view_item_1 img");
-      const $view_item_2 = document.querySelector("#view_item_2 img");
-      const $view_item_3 = document.querySelector("#view_item_3 img");
-      const $view_item_4 = document.querySelector("#view_item_4 img");
-      const $view_item_5 = document.querySelector("#view_item_5 img");
-      const $view_item_6 = document.querySelector("#view_item_6 img");
-      const $view_item_7 = document.querySelector("#view_item_7 img");
-      const $view_item_8 = document.querySelector("#view_item_8 img");
-      const $view_item_9 = document.querySelector("#view_item_9 img");
-      const $view_item_10 = document.querySelector("#view_item_10 img");
-      const $view_item_11 = document.querySelector("#view_item_11 img");
-
-      const $view_item_12 = document.querySelector("#view_item_12 img");
-      const $view_item_13 = document.querySelector("#view_item_13 img");
-
-      const $view_item_14 = document.querySelector("#view_item_14 img");
-      const $view_item_15 = document.querySelector("#view_item_15 img");
-
-      const $view_item_16 = document.querySelector("#view_item_16 img");
-      const $view_item_17 = document.querySelector("#view_item_17 img");
-
-      const $view_item_18 = document.querySelector("#view_item_18 img");
-      const $view_item_19 = document.querySelector("#view_item_19 img");
-
-      const $view_item_20 = document.querySelector("#view_item_20 img");
-      const $view_item_21 = document.querySelector("#view_item_21 img");
-
-      // 날짜 형식 변경 YYYY-MM-DD HH:mm
-      function changeDateFormat(date) {
-        const now = date ? new Date(date) : new Date();
-
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, "0");
-        const day = String(now.getDate()).padStart(2, "0");
-        const hours = String(now.getHours()).padStart(2, "0");
-        const minutes = String(now.getMinutes()).padStart(2, "0");
-
-        const datetimeLocalValue = `${year}-${month}-${day} ${hours}:${minutes}`;
-
-        return datetimeLocalValue;
-      }
-
-      function generateImageURL(time, url) {
-        if (url.indexOf("https://nmsc.kma.go.kr/IMG/GK2A/AMI/PRIMARY/L1B/COMPLETE") !== -1) {
-          const current = new Date(new Date() - 9 * 60 * 60 * 1000);
-          time = new Date(new Date(time) - 9 * 60 * 60 * 1000);
-
-          //위성사진 완성되는데 10분 이상 소요 되는듯하여 최신
-          if (current - time < 10 * 60 * 1000) time = new Date(new Date(time) - 20 * 60 * 1000);
-        }
-
-        if (url.indexOf("https://www.weather.go.kr/w/repositary/image/typ/sat/") !== -1) {
-          const current = new Date(new Date() - 9 * 60 * 60 * 1000);
-          time = new Date(new Date(time) - 9 * 60 * 60 * 1000);
-
-          //위성사진 완성되는데 60분 이상 소요 되는듯하여 최신
-          if (current - time < 10 * 60 * 1000) time = new Date(new Date(time) - 60 * 60 * 1000);
-        }
-
-        const year = time.getFullYear();
-        const month = String(time.getMonth() + 1).padStart(2, "0");
-        const day = String(time.getDate()).padStart(2, "0");
-        let hours = String(time.getHours()).padStart(2, "0");
-        let minutes = String(Math.floor(time.getMinutes() / 5) * 5).padStart(2, "0");
-
-        if (url.indexOf("https://nmsc.kma.go.kr/IMG/GK2A/AMI/PRIMARY/L1B/COMPLETE") !== -1) {
-          url = url.replace("{1}", `${year}${month}/${day}/${hours}`);
-
-          minutes = String(Math.floor(minutes / 10) * 10).padStart(2, "0");
-          const dateString = `${year}${month}${day}${hours}${minutes}`;
-          return `${url.replaceAll("{0}", dateString)}`;
-        }
-
-        if (
-          url.indexOf("https://www.weather.go.kr/w/repositary/image/typ/monitor/kim_typh_fcst_") !== -1 ||
-          url.indexOf("/media/typhoon/ensemble") !== -1 ||
-          url.indexOf("https://www.weather.go.kr/w/repositary/image/cht/img/kim_surf_newsur_pa4") !== -1
-        ) {
-          time = new Date(new Date(time) - 14 * 60 * 60 * 1000);
-
-          const year = time.getFullYear();
-          const month = String(time.getMonth() + 1).padStart(2, "0");
-          const day = String(time.getDate()).padStart(2, "0");
-          let hours = String(time.getHours()).padStart(2, "0");
-          let minutes = String(Math.floor(time.getMinutes() / 5) * 5).padStart(2, "0");
-
-          hours = String(Math.floor(time.getHours() / 6) * 6).padStart(2, "0");
-
-          const dateString = `${year}${month}${day}${hours}`;
-          return `${url.replaceAll("{0}", dateString)}`;
-        } else if (url.indexOf("https://www.weather.go.kr/w/repositary/image/cht/img/kor1_anlmod_pb4") !== -1) {
-          const current = new Date(new Date() - 9 * 60 * 60 * 1000);
-          baseTime = new Date(new Date(time) - 9 * 60 * 60 * 1000);
-
-          // 이미지 생성시간 고려 10분이 안되었으면 1시간 전 이미지로 대신 노출
-          if (current - time < 10 * 60 * 1000) time = new Date(new Date(time) - 60 * 60 * 1000);
-
-          const baseyear = baseTime.getFullYear();
-          const basemonth = String(baseTime.getMonth() + 1).padStart(2, "0");
-          const baseday = String(baseTime.getDate()).padStart(2, "0");
-          const basehours = String(baseTime.getHours()).padStart(2, "0");
-
-          const dateString = `${baseyear}${basemonth}${baseday}${basehours}`;
-
-          return `${url.replaceAll("{0}", dateString)}`;
-        } else if (url.indexOf("https://afso.kma.go.kr/cgi/aws3/nph-aws_min_img1?obs=rn_acc") !== -1) {
-          const baseTime = new Date(time);
-
-          if (url.indexOf("_DT=RSW:RN03D") !== -1) {
-            baseTime.setDate(time.getDate() - 2);
-          } else if (url.indexOf("_DT=RSW:RN02D") !== -1) {
-            baseTime.setDate(time.getDate() - 1);
-          }
-
-          baseTime.setHours(0, 0, 0, 0);
-
-          const baseyear = baseTime.getFullYear();
-          const basemonth = String(baseTime.getMonth() + 1).padStart(2, "0");
-          const baseday = String(baseTime.getDate()).padStart(2, "0");
-          const basehours = String(baseTime.getHours()).padStart(2, "0");
-          url = url.replace("{1}", `${baseyear}${basemonth}${baseday}${basehours}`);
-
-          const dateString = `${year}${month}${day}${hours}${minutes}`;
-          return `${url.replaceAll("{0}", dateString)}&cache_bust=${new Date().getTime()}`;
-        } else if (url.indexOf("https://www.weather.go.kr/w/repositary/image/typ/sat/") !== -1) {
-          let now = new Date(time);
-
-          let minutes = now.getMinutes();
-
-          if (minutes >= 50) {
-            minutes = 50;
-          } else {
-            now = new Date(new Date(time) - 1 * 60 * 60 * 1000);
-            hours = now.getHours();
-            minutes = 50;
-          }
-
-          // 포맷팅된 시간 문자열 생성
-          const formattedHours = String(hours).padStart(2, "0");
-          const formattedMinutes = String(minutes).padStart(2, "0");
-
-          const dateString = `${year}${month}${day}${formattedHours}${formattedMinutes}`;
-          return `${url.replaceAll("{0}", dateString)}`;
-        } else if (url.indexOf("https://www.typhoon2000.ph/multi/data/") !== -1) {
-          return `${url.replaceAll("{typoon}", typoonName)}`;
-        } else if (url.indexOf("https://data.kma.go.kr/CHT/EXTJ/") !== -1) {
-          const baseTime = new Date(time);
-
-          baseTime.setDate(time.getDate() - 1);
-          baseTime.setHours(0, 0, 0, 0);
-
-          const baseyear = baseTime.getFullYear();
-          const basemonth = String(baseTime.getMonth() + 1).padStart(2, "0");
-          const baseday = String(baseTime.getDate()).padStart(2, "0");
-          const basehours = String(baseTime.getHours()).padStart(2, "0");
-          url = url.replace("{2}", `${baseyear}${basemonth}/${baseday}`);
-
-          const dateString = `${baseyear}${basemonth}${baseday}${basehours}`;
-          return `${url.replaceAll("{0}", dateString)}`;
-        } else {
-          const dateString = `${year}${month}${day}${hours}${minutes}`;
-          return `${url.replaceAll("{0}", dateString)}&cache_bust=${new Date().getTime()}`;
-        }
-      }
-
-      function togglePlay() {
-        const playButton = document.getElementById("playButton");
-        const slider = document.getElementById("timeSlider");
-        if (isPlaying) {
-          clearInterval(playInterval);
-          playButton.textContent = "재생";
-        } else {
-          playStartValue = parseFloat(slider.value);
-          playInterval = setInterval(() => {
-            if (slider.value < 48) {
-              slider.value = parseFloat(slider.value) + 1.0;
-            } else {
-              if (document.getElementById("repeatCheckbox").checked) {
-                slider.value = playStartValue;
-              } else {
-                clearInterval(playInterval);
-                playButton.textContent = "재생";
-                isPlaying = false;
-                return;
-              }
-            }
-            updateSlider();
-          }, 2000);
-          playButton.textContent = "정지";
-        }
-        isPlaying = !isPlaying;
-      }
-
-      function toggleAutoUpdate() {
-        const autoUpdateCheckbox = document.getElementById("autoUpdateCheckbox");
-        if (autoUpdateCheckbox.checked) {
-          startAutoUpdate();
-          showNextUpdateDisplay();
-        } else {
-          stopAutoUpdate();
-          hideNextUpdateDisplay();
-        }
-      }
-
-      function showNextUpdateDisplay() {
-        function updateNextUpdateDisplay() {
-          const nextUpdate = changeDateFormat(getNextUpdateTime());
-
-          const nextUpdateDisplay = document.getElementById("nextUpdateDisplay");
-          if (nextUpdateDisplay) {
-            nextUpdateDisplay.textContent = `NEXT : ${nextUpdate}`;
-            nextUpdateDisplay.style.display = "block";
-          }
-        }
-
-        updateNextUpdateDisplay();
-        nextUpdateDisplayInterval = setInterval(updateNextUpdateDisplay, 1000);
-      }
-
-      function hideNextUpdateDisplay() {
-        const nextUpdateDisplay = document.getElementById("nextUpdateDisplay");
-        if (nextUpdateDisplay) {
-          nextUpdateDisplay.style.display = "none";
-        }
-        clearInterval(nextUpdateDisplayInterval);
-      }
-
-      function stopAutoUpdate() {
-        clearTimeout(autoUpdateInterval);
-      }
-
-      function updateSlider(selectedTimeOverride, type = "change") {
-        const slider = document.getElementById("timeSlider");
-        const currentTimeDisplay = document.getElementById("currentTime");
-        const sliderValue = parseFloat(slider.value);
-        const hoursDiff = 48 - sliderValue;
-
-        const timeToUse = selectedTimeOverride || selectedTime || currentTime;
-        const displayTime = new Date(timeToUse.getTime() - hoursDiff * 60 * 60000);
-        currentTimeDisplay.textContent = changeDateFormat(displayTime);
-        if (type === "change") updateImages(displayTime);
-      }
-
-      function updateImages(time) {
-        $view_screen_1.src = generateImageURL(time, urls.screenUrl1);
-        $view_screen_2.src = generateImageURL(time, urls.screenUrl2);
-        $view_screen_3.src = generateImageURL(time, urls.screenUrl3);
-        $view_screen_4.src = generateImageURL(time, urls.screenUrl4);
-
-        $view_item_1.src = generateImageURL(time, urls.itemUrl1);
-        $view_item_2.src = generateImageURL(time, urls.itemUrl2);
-        $view_item_3.src = generateImageURL(time, urls.itemUrl3);
-        $view_item_4.src = generateImageURL(time, urls.itemUrl4);
-        $view_item_5.src = generateImageURL(time, urls.itemUrl5);
-        $view_item_6.src = generateImageURL(time, urls.itemUrl6);
-        $view_item_7.src = generateImageURL(time, urls.itemUrl7);
-        $view_item_8.src = generateImageURL(time, urls.itemUrl8);
-        $view_item_9.src = generateImageURL(time, urls.itemUrl9);
-        $view_item_10.src = generateImageURL(time, urls.itemUrl10);
-        $view_item_11.src = generateImageURL(time, urls.itemUrl11);
-
-        $view_item_12.src = generateImageURL(time, urls.itemUrl12);
-        //$view_item_13.src = generateImageURL(time, urls.itemUrl13);
-
-        $view_item_14.src = generateImageURL(time, urls.itemUrl14);
-        $view_item_15.src = generateImageURL(time, urls.itemUrl15);
-
-        $view_item_16.src = generateImageURL(time, urls.itemUrl16);
-        $view_item_17.src = generateImageURL(time, urls.itemUrl17);
-
-        $view_item_18.src = generateImageURL(time, urls.itemUrl18);
-        $view_item_19.src = generateImageURL(time, urls.itemUrl19);
-
-        $view_item_20.src = generateImageURL(time, urls.itemUrl20);
-        $view_item_21.src = generateImageURL(time, urls.itemUrl21);
-      }
-
-      function setLatestTime() {
-        document.getElementById("datePicker").value = changeDateFormat();
-        document.getElementById("timeSlider").value = 48;
-        updateSlider();
-      }
-
-      function getNextUpdateTime() {
-        const now = new Date();
-        const minutes = Math.floor(now.getMinutes() / 5) * 5;
-        const nextUpdate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), minutes, 0, 0);
-        nextUpdate.setMinutes(nextUpdate.getMinutes() + 4);
-        nextUpdate.setSeconds(10);
-        if (nextUpdate <= now) {
-          nextUpdate.setMinutes(nextUpdate.getMinutes() + 5);
-        }
-        return nextUpdate;
-      }
-
-      function startAutoUpdate() {
-        function scheduleNextUpdate() {
-          const now = new Date();
-          const nextUpdate = getNextUpdateTime();
-          const timeUntilUpdate = nextUpdate.getTime() - now.getTime();
-
-          console.log(`Next update scheduled at: ${nextUpdate.toLocaleString()}`);
-
-          autoUpdateInterval = setTimeout(() => {
-            setLatestTime();
-            updateImages(currentTime);
-            scheduleNextUpdate();
-          }, timeUntilUpdate);
-        }
-
-        scheduleNextUpdate();
-      }
-
-      function jumpToDate() {
-        const datePicker = document.getElementById("datePicker");
-        selectedTime = new Date(datePicker.value);
-        selectedTime.setMinutes(Math.floor(selectedTime.getMinutes() / 5) * 5);
-        document.getElementById("timeSlider").value = 48;
-        updateSlider(selectedTime);
-      }
-
-      function adjustTime(hours) {
-        const slider = document.getElementById("timeSlider");
-        let newValue = parseFloat(slider.value) + hours;
-        newValue = Math.max(0, Math.min(48, newValue));
-        slider.value = newValue;
-        updateSlider();
-      }
-
-      function updateDatePickerDefault() {
-        document.getElementById("datePicker").value = changeDateFormat();
-      }
-
-      function init() {
-        setLatestTime();
-        jumpToDate();
-        updateImages(currentTime);
-        updateDatePickerDefault();
-        currentTimeInterval = setInterval(updateDatePickerDefault, 1000);
-      }
-
-      init();
-    </script>
+    </footer>
   </body>
 </html>
