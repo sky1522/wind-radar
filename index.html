@@ -10,107 +10,111 @@
     <script defer src="index.js"></script>
   </head>
   <body>
-    <main class="container-fluid">
-      <div id="screenLeft"><img src="" alt="" /></div>
-      <div id="screenRight"><img src="" alt="" /></div>
-    </main>
-    <footer class="center">
-      <!-- 화면 1 ~ 4 : 각화면 초기화용-->
-      <div>
-        <button type="button" onclick="changeScreen(1)">1</button>
-        <button type="button" onclick="changeScreen(2)">2</button>
-        <button type="button" onclick="changeScreen(3)">3</button>
-        <button type="button" onclick="changeScreen(4)">4</button>
-      </div>
-
-      <!-- 태풍 정보-->
-      <div>
-        <select
-          id="typoons"
-          name="select"
-          aria-label="Select"
-          required
-          onchange="changeScreen(this.options[this.selectedIndex].value)"
-        >
-          <option selected disabled value="">태풍 정보</option>
-          <option value="TP1">태풍 현황</option>
-          <option value="TP2">태풍 감시</option>
-          <option value="TP3">태풍 예측</option>
-          <option value="TP4">해수 온도</option>
-        </select>
-      </div>
-
-      <!-- 항목 선택-->
-      <div>
-        <select
-          id="items"
-          name="select"
-          aria-label="Select"
-          required
-          onchange="changeScreen(this.options[this.selectedIndex].value)"
-        >
-          <option selected disabled value="">항목 정보</option>
-          <option value="item1">특보 현황</option>
-          <option value="item2">강수 유무</option>
-          <option value="item3">강수(60분)</option>
-          <option value="item4">강수(3H)</option>
-          <option value="item5">일 강수량</option>
-          <option value="item6">2일 강수량</option>
-          <option value="item7">3일 강수량</option>
-          <option value="item8">낙뢰 영상</option>
-          <option value="item9">현재 기온</option>
-          <option value="item10">체감 온도</option>
-        </select>
-      </div>
-
-      <div class="flex-type">
-        <input
-          type="datetime-local"
-          id="datePicker"
-          onblur="currentTimeInterval = setInterval(updateDatePickerDefault, 1000);jumpToDate()"
-          onclick="clearInterval(currentTimeInterval)"
-        />
+    <div class="container-fluid">
+      <main>
+        <div id="screenLeft"><img src="" alt="" /></div>
+        <div id="screenRight"><img src="" alt="" /></div>
+      </main>
+      <footer class="center">
+        <!-- 화면 1 ~ 4 : 각화면 초기화용-->
         <div>
+          <button type="button" onclick="changeScreen(1)">1</button>
+          <button type="button" onclick="changeScreen(2)">2</button>
+          <button type="button" onclick="changeScreen(3)">3</button>
+          <button type="button" onclick="changeScreen(4)">4</button>
+        </div>
+
+        <!-- 태풍 정보-->
+        <div>
+          <select
+            id="typoons"
+            name="select"
+            aria-label="Select"
+            required
+            onchange="changeScreen(this.options[this.selectedIndex].value)"
+          >
+            <option selected disabled value="">태풍 정보</option>
+            <option value="TP1">태풍 현황</option>
+            <option value="TP2">태풍 감시</option>
+            <option value="TP3">태풍 예측</option>
+            <option value="TP4">해수 온도</option>
+            <option value="TP5">일기도</option>
+          </select>
+        </div>
+
+        <!-- 항목 선택-->
+        <div>
+          <select
+            id="items"
+            name="select"
+            aria-label="Select"
+            required
+            onchange="changeScreen(this.options[this.selectedIndex].value)"
+          >
+            <option selected disabled value="">항목 정보</option>
+            <option value="item1">특보 현황</option>
+            <option value="item2">강수 유무</option>
+            <option value="item3">강수(60분)</option>
+            <option value="item4">강수(3H)</option>
+            <option value="item5">일 강수량</option>
+            <option value="item6">2일 강수량</option>
+            <option value="item7">3일 강수량</option>
+            <option value="item8">낙뢰 영상</option>
+            <option value="item9">현재 기온</option>
+            <option value="item10">체감 온도</option>
+            <option value="item11">AWS 관측 데이터</option>
+          </select>
+        </div>
+
+        <div class="flex-type">
+          <input
+            type="datetime-local"
+            id="datePicker"
+            onblur="currentTimeInterval = setInterval(updateDatePickerDefault, 1000);jumpToDate()"
+            onclick="clearInterval(currentTimeInterval)"
+          />
           <div>
-            <input
-              type="range"
-              min="0"
-              max="48"
-              value="48"
-              step="0.5"
-              id="timeSlider"
-              oninput="updateSlider(null, 'input')"
-              onchange="updateSlider(null, 'change')"
-            />
+            <div>
+              <input
+                type="range"
+                min="0"
+                max="48"
+                value="48"
+                step="0.5"
+                id="timeSlider"
+                oninput="updateSlider(null, 'input')"
+                onchange="updateSlider(null, 'change')"
+              />
+            </div>
+            <small><span>-48H</span><span>-36H</span><span>-24H</span><span>-12H</span><span>0H</span></small>
           </div>
-          <small><span>-48H</span><span>-36H</span><span>-24H</span><span>-12H</span><span>0H</span></small>
+          <div id="currentTime">asdfasdfasdf</div>
         </div>
-        <div id="currentTime">asdfasdfasdf</div>
-      </div>
 
-      <div>
-        <button class="outline contrast" onclick="adjustTime(-3)">-3H</button>
-        <button class="outline contrast" onclick="adjustTime(-1)">-1H</button>
-        <button class="outline contrast" onclick="adjustTime(-0.5)">-30M</button>
-        <button onclick="setLatestTime()">현재</button>
-        <button class="outline contrast" onclick="adjustTime(0.5)">+30M</button>
-        <button class="outline contrast" onclick="adjustTime(1)">+1H</button>
-        <button class="outline contrast" onclick="adjustTime(3)">+3H</button>
-      </div>
-
-      <div class="control">
-        <button id="playButton" onclick="togglePlay()">재생</button>
         <div>
-          <fieldset>
-            <input type="checkbox" id="repeatCheckbox" />
-            <label htmlFor="repeatCheckbox">반복</label>
-            <input type="checkbox" id="autoUpdateCheckbox" onchange="toggleAutoUpdate()" />
-            <label htmlFor="autoUpdateCheckbox">업데이트</label>
-          </fieldset>
-
-          <div id="nextUpdateDisplay"></div>
+          <button class="outline contrast" onclick="adjustTime(-3)">-3H</button>
+          <button class="outline contrast" onclick="adjustTime(-1)">-1H</button>
+          <button class="outline contrast" onclick="adjustTime(-0.5)">-30M</button>
+          <button onclick="setLatestTime()">현재</button>
+          <button class="outline contrast" onclick="adjustTime(0.5)">+30M</button>
+          <button class="outline contrast" onclick="adjustTime(1)">+1H</button>
+          <button class="outline contrast" onclick="adjustTime(3)">+3H</button>
         </div>
-      </div>
-    </footer>
+
+        <div class="control">
+          <button id="playButton" onclick="togglePlay()">재생</button>
+          <div>
+            <fieldset>
+              <input type="checkbox" id="repeatCheckbox" />
+              <label htmlFor="repeatCheckbox">반복</label>
+              <input type="checkbox" id="autoUpdateCheckbox" onchange="toggleAutoUpdate()" />
+              <label htmlFor="autoUpdateCheckbox">업데이트</label>
+            </fieldset>
+
+            <div id="nextUpdateDisplay"></div>
+          </div>
+        </div>
+      </footer>
+    </div>
   </body>
 </html>

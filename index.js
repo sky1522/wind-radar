@@ -47,6 +47,9 @@ const baseImages = {
   typoon4_left_default: "https://data.kma.go.kr/CHT/EXTJ/{T6}/usst_korea_anal_{T5}.gif",
   typoon4_right_default: "https://data.kma.go.kr/CHT/EXTJ/{T6}/usst_korea_anom_{T5}.gif",
 
+  typoon5_left_default: "https://www.weather.go.kr/w/repositary/image/cht/img/kim_surf_newsur_pa4_{T8}.gif",
+  typoon5_right_default: "https://www.weather.go.kr/w/repositary/image/cht/img/kor1_anlmod_pb4_{T9}.gif",
+
   //항목 선택
   item1_left_default:
     "https://afso.kma.go.kr/cgi/wrn/nph-wrn7?tm={T1}&lon=127&lat=37.59&range=80&size=330.00&city=1&tmef=0&tmefl={T1}&name=0&out=0&wrn=W,R,C,D,O,V,T,S,Y,H&lv=0&_DT=RSW:MAPR",
@@ -191,6 +194,25 @@ function generateImageURL(time, url) {
     url = url.replaceAll("{T7}", changeDateFormat(time, 3));
   }
 
+  //6시간 단위
+  if (url.includes("{T8}")) {
+    time = new Date(new Date(time) - 14 * 60 * 60 * 1000);
+
+    time.setHours(Math.floor(time.getHours() / 6) * 6);
+
+    url = url.replaceAll("{T8}", changeDateFormat(time, 3));
+  }
+
+  if (url.includes("{T9}")) {
+    const current = new Date(new Date() - UTC_TIME);
+    baseTime = new Date(new Date(time) - UTC_TIME);
+
+    // 이미지 생성시간 고려 10분이 안되었으면 1시간 전 이미지로 대신 노출
+    if (current - baseTime < 10 * 60 * 1000) time = new Date(new Date(baseTime) - 60 * 60 * 1000);
+
+    url = url.replaceAll("{T9}", changeDateFormat(time, 3));
+  }
+
   return url;
 }
 
@@ -290,129 +312,6 @@ function stopAutoUpdate() {
   clearTimeout(autoUpdateInterval);
 }
 
-/* function generateImageURL(time, url) {
-  if (url.indexOf("https://nmsc.kma.go.kr/IMG/GK2A/AMI/PRIMARY/L1B/COMPLETE") !== -1) {
-    const current = new Date(new Date() - 9 * 60 * 60 * 1000);
-    time = new Date(new Date(time) - 9 * 60 * 60 * 1000);
-
-    //위성사진 완성되는데 10분 이상 소요 되는듯하여 최신
-    if (current - time < 10 * 60 * 1000) time = new Date(new Date(time) - 20 * 60 * 1000);
-  }
-
-  if (url.indexOf("https://www.weather.go.kr/w/repositary/image/typ/sat/") !== -1) {
-    const current = new Date(new Date() - 9 * 60 * 60 * 1000);
-    time = new Date(new Date(time) - 9 * 60 * 60 * 1000);
-
-    //위성사진 완성되는데 60분 이상 소요 되는듯하여 최신
-    if (current - time < 10 * 60 * 1000) time = new Date(new Date(time) - 60 * 60 * 1000);
-  }
-
-  const year = time.getFullYear();
-  const month = String(time.getMonth() + 1).padStart(2, "0");
-  const day = String(time.getDate()).padStart(2, "0");
-  let hours = String(time.getHours()).padStart(2, "0");
-  let minutes = String(Math.floor(time.getMinutes() / 5) * 5).padStart(2, "0");
-
-  if (url.indexOf("https://nmsc.kma.go.kr/IMG/GK2A/AMI/PRIMARY/L1B/COMPLETE") !== -1) {
-    url = url.replace("{1}", `${year}${month}/${day}/${hours}`);
-
-    minutes = String(Math.floor(minutes / 10) * 10).padStart(2, "0");
-    const dateString = `${year}${month}${day}${hours}${minutes}`;
-    return `${url.replaceAll("{0}", dateString)}`;
-  }
-
-  if (
-    url.indexOf("https://www.weather.go.kr/w/repositary/image/typ/monitor/kim_typh_fcst_") !== -1 ||
-    url.indexOf("/media/typhoon/ensemble") !== -1 ||
-    url.indexOf("https://www.weather.go.kr/w/repositary/image/cht/img/kim_surf_newsur_pa4") !== -1
-  ) {
-    time = new Date(new Date(time) - 14 * 60 * 60 * 1000);
-
-    const year = time.getFullYear();
-    const month = String(time.getMonth() + 1).padStart(2, "0");
-    const day = String(time.getDate()).padStart(2, "0");
-    let hours = String(time.getHours()).padStart(2, "0");
-    let minutes = String(Math.floor(time.getMinutes() / 5) * 5).padStart(2, "0");
-
-    hours = String(Math.floor(time.getHours() / 6) * 6).padStart(2, "0");
-
-    const dateString = `${year}${month}${day}${hours}`;
-    return `${url.replaceAll("{0}", dateString)}`;
-  } else if (url.indexOf("https://www.weather.go.kr/w/repositary/image/cht/img/kor1_anlmod_pb4") !== -1) {
-    const current = new Date(new Date() - 9 * 60 * 60 * 1000);
-    baseTime = new Date(new Date(time) - 9 * 60 * 60 * 1000);
-
-    // 이미지 생성시간 고려 10분이 안되었으면 1시간 전 이미지로 대신 노출
-    if (current - time < 10 * 60 * 1000) time = new Date(new Date(time) - 60 * 60 * 1000);
-
-    const baseyear = baseTime.getFullYear();
-    const basemonth = String(baseTime.getMonth() + 1).padStart(2, "0");
-    const baseday = String(baseTime.getDate()).padStart(2, "0");
-    const basehours = String(baseTime.getHours()).padStart(2, "0");
-
-    const dateString = `${baseyear}${basemonth}${baseday}${basehours}`;
-
-    return `${url.replaceAll("{0}", dateString)}`;
-  } else if (url.indexOf("https://afso.kma.go.kr/cgi/aws3/nph-aws_min_img1?obs=rn_acc") !== -1) {
-    const baseTime = new Date(time);
-
-    if (url.indexOf("_DT=RSW:RN03D") !== -1) {
-      baseTime.setDate(time.getDate() - 2);
-    } else if (url.indexOf("_DT=RSW:RN02D") !== -1) {
-      baseTime.setDate(time.getDate() - 1);
-    }
-
-    baseTime.setHours(0, 0, 0, 0);
-
-    const baseyear = baseTime.getFullYear();
-    const basemonth = String(baseTime.getMonth() + 1).padStart(2, "0");
-    const baseday = String(baseTime.getDate()).padStart(2, "0");
-    const basehours = String(baseTime.getHours()).padStart(2, "0");
-    url = url.replace("{1}", `${baseyear}${basemonth}${baseday}${basehours}`);
-
-    const dateString = `${year}${month}${day}${hours}${minutes}`;
-    return `${url.replaceAll("{0}", dateString)}&cache_bust=${new Date().getTime()}`;
-  } else if (url.indexOf("https://www.weather.go.kr/w/repositary/image/typ/sat/") !== -1) {
-    let now = new Date(time);
-
-    let minutes = now.getMinutes();
-
-    if (minutes >= 50) {
-      minutes = 50;
-    } else {
-      now = new Date(new Date(time) - 1 * 60 * 60 * 1000);
-      hours = now.getHours();
-      minutes = 50;
-    }
-
-    // 포맷팅된 시간 문자열 생성
-    const formattedHours = String(hours).padStart(2, "0");
-    const formattedMinutes = String(minutes).padStart(2, "0");
-
-    const dateString = `${year}${month}${day}${formattedHours}${formattedMinutes}`;
-    return `${url.replaceAll("{0}", dateString)}`;
-  } else if (url.indexOf("https://www.typhoon2000.ph/multi/data/") !== -1) {
-    return `${url.replaceAll("{typoon}", typoonName)}`;
-  } else if (url.indexOf("https://data.kma.go.kr/CHT/EXTJ/") !== -1) {
-    const baseTime = new Date(time);
-
-    baseTime.setDate(time.getDate() - 1);
-    baseTime.setHours(0, 0, 0, 0);
-
-    const baseyear = baseTime.getFullYear();
-    const basemonth = String(baseTime.getMonth() + 1).padStart(2, "0");
-    const baseday = String(baseTime.getDate()).padStart(2, "0");
-    const basehours = String(baseTime.getHours()).padStart(2, "0");
-    url = url.replace("{2}", `${baseyear}${basemonth}/${baseday}`);
-
-    const dateString = `${baseyear}${basemonth}${baseday}${basehours}`;
-    return `${url.replaceAll("{0}", dateString)}`;
-  } else {
-    const dateString = `${year}${month}${day}${hours}${minutes}`;
-    return `${url.replaceAll("{0}", dateString)}&cache_bust=${new Date().getTime()}`;
-  }
-}
- */
 function setLatestTime() {
   $datePicker.value = changeDateFormat();
   $timeSlider.value = 48;
@@ -443,7 +342,8 @@ function updateImages(time) {
     currentScreenIndex === "TP1" ||
     currentScreenIndex === "TP2" ||
     currentScreenIndex === "TP3" ||
-    currentScreenIndex === "TP4"
+    currentScreenIndex === "TP4" ||
+    currentScreenIndex === "TP5"
   ) {
     document.querySelector("#items").options[0].selected = true;
     screen(
@@ -470,32 +370,8 @@ function updateImages(time) {
       generateImageURL(time, currentRightSrc)
     );
   }
-  /* 
-  if (currentScreenIndex === "TP2") {
-    $screenLeft.src = generateImageURL(time, baseImages.typoon2_left_default);
-    $screenRight.src = generateImageURL(time, baseImages.typoon2_right_default);
-  }
 
-  if (currentScreenIndex === "TP3") {
-    $screenLeft.src = generateImageURL(time, baseImages.typoon3_left_default);
-    $screenRight.src = generateImageURL(time, baseImages.typoon3_right_default);
-  }
-
-  if (currentScreenIndex === "TP4") {
-    $screenLeft.src = generateImageURL(time, baseImages.typoon4_left_default);
-    $screenRight.src = generateImageURL(time, baseImages.typoon4_right_default);
-  } */
-  /*
-  if (currentScreenIndex === "item1") $screenLeft.src = generateImageURL(time, baseImages.item1_left_default);
-  if (currentScreenIndex === "item2") $screenLeft.src = generateImageURL(time, baseImages.item2_left_default);
-  if (currentScreenIndex === "item3") $screenLeft.src = generateImageURL(time, baseImages.item3_left_default);
-  if (currentScreenIndex === "item4") $screenLeft.src = generateImageURL(time, baseImages.item4_left_default);
-  if (currentScreenIndex === "item5") $screenLeft.src = generateImageURL(time, baseImages.item5_left_default);
-  if (currentScreenIndex === "item6") $screenLeft.src = generateImageURL(time, baseImages.item6_left_default);
-  if (currentScreenIndex === "item7") $screenLeft.src = generateImageURL(time, baseImages.item7_left_default);
-  if (currentScreenIndex === "item8") $screenLeft.src = generateImageURL(time, baseImages.item8_left_default);
-  if (currentScreenIndex === "item9") $screenLeft.src = generateImageURL(time, baseImages.item9_left_default);
-  if (currentScreenIndex === "item10") $screenLeft.src = generateImageURL(time, baseImages.item10_left_default); */
+  if (currentScreenIndex === "item11") alert("aws 작업중");
 }
 
 function jumpToDate() {
