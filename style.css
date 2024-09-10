@@ -167,7 +167,24 @@ footer button.outline {
 }
 
 @media (max-width: 768px) {
-  main.container-fluid {
+  .container-fluid {
     flex-wrap: wrap;
+    height: auto;
+  }
+  body {
+    overflow-x: hidden;
+  }
+
+  footer {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .full-screen-image {
+    position: static;
+  }
+
+  #screen {
+    display: block;
   }
 }
