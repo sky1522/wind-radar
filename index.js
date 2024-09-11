@@ -1,11 +1,11 @@
 // 사용자 하드 코딩 영역
 //태풍현황
-const TYPOON1_SEQ = 10; //태풍 발생 호
-const TYPOON1_TIME = 202408230400; //태풍 발표 시각
+const TYPOON1_SEQ = 13; //태풍 발생 호
+const TYPOON1_TIME = 202409111000; //태풍 발표 시각
 
 //태풍예측
-const TYPOON2_NAME = "YAGI"; //태풍 이름
-const TYPOON2_TIME = 2024090700; //태풍 발표 시각
+const TYPOON2_NAME = "BEBINCA"; //태풍 이름
+const TYPOON2_TIME = 2024091012; //태풍 발표 시각
 // 사용자 하드 코딩 영역
 
 const UTC_TIME = 9 * 60 * 60 * 1000;
