@@ -248,7 +248,7 @@ function generateImageURL(time, url) {
     time = new Date(new Date(time) - UTC_TIME);
 
     // 이미지 생성시간 고려 10분이 안되었으면 1시간 전  00시 이미지로 대신 노출
-    if (current.getMinutes - time.getMinutes < DELAY)
+    if (current.getMinutes() - time.getMinutes() < DELAY)
       time.setHours(Math.floor(time.getHours() - 1));
 
     url = url.replaceAll("{T9}", changeDateFormat(time, 3));
