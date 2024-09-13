@@ -63,7 +63,7 @@ const baseImages = {
 
   //항목 선택
   item1_left_default:
-    "https://afso.kma.go.kr/cgi/wrn/nph-wrn7?tm={T1}&lon=127&lat=37.59&range=80&size=330.00&city=1&tmef=0&tmefl={T1}&name=1&out=0&wrn=W,R,C,D,O,V,T,S,Y,H&lv=0&_DT=RSW:MAPR",
+    "https://apihub.kma.go.kr/api/typ03/cgi/wrn/nph-wrn7?out=0&tmef=1&city=1&name=1&tm={T1}&lon=127&lat=37.59&range=80&size=330&wrn=W,R,C,D,O,V,T,S,Y,H,&authKey=DMoNuRIXSjSKDbkSF_o0qg",
   item2_left_default:
     "https://afso.kma.go.kr/cgi/aws3/nph-aws_min_img1?obs=rn_ex&tm={T1}&val=1&stn=1&obj=mq&map=E&grid=2&legend=1&size=330.00&itv=5&zoom_level=2&zoom_x=3200000&zoom_y=5400000&gov=&_DT=RSW:RNEX",
   item3_left_default:
