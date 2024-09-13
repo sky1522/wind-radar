@@ -30,16 +30,19 @@ const baseImages = {
   screen1_right_default: `https://afso.kma.go.kr/cgi/rdr/nph-rdr_cmp1_img?tm={T1}&cmp=HSP&qcd=HSLP&obs=ECHD&color=C4&aws=0&acc=0&map=HC&grid=2&legend=1&size=700&itv=5&zoom_level=1&zoom_x=3350000&zoom_y=5120000&gov=`,
 
   screen2_left_default: `https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?tm={T1}&cmp=HSP&qcd=HSO&obs=ECHD&map=HC&size=800&xp=-9999&yp=-9999&zoom=1&wv=00&ht=1500&color=C4&topo=1&ZRa=&ZRb=&lat=&lon=&lonlat=0&x1=&y1=&x2=&y2=&center=0&typ=0&aws=01&wt=0`,
-  screen2_right_default: `https://nmsc.kma.go.kr/IMG/GK2A/AMI/PRIMARY/L1B/COMPLETE/KO/{T3}/gk2a_ami_le1b_rgb-s-daynight_ko020lc_{T2}.png`,
+  screen2_right_default: `https://afso.kma.go.kr/cgi/rdr/nph-rdr_cmp1_img?tm={T1}&cmp=HSP&qcd=HSLP&obs=ECHD&color=C4&aws=0&acc=0&map=HB&grid=2&legend=1&size=700&itv=5&zoom_level=1&zoom_x=3300000&zoom_y=4200000&gov=`,
 
   screen3_left_default: `https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?tm={T1}&cmp=HSP&qcd=HSO&obs=ECHD&map=HC&size=800&xp=-9999&yp=-9999&zoom=1&wv=00&ht=1500&color=C4&topo=1&ZRa=&ZRb=&lat=&lon=&lonlat=0&x1=&y1=&x2=&y2=&center=0&typ=0&aws=01&wt=0`,
-  screen3_right_default: `https://nmsc.kma.go.kr/IMG/GK2A/AMI/PRIMARY/L1B/COMPLETE/KO/{T3}/gk2a_ami_le1b_enhc-wv069_ko020lc_{T2}.srv.png`,
+  screen3_right_default: `https://nmsc.kma.go.kr/IMG/GK2A/AMI/PRIMARY/L1B/COMPLETE/KO/{T3}/gk2a_ami_le1b_rgb-s-daynight_ko020lc_{T2}.png`,
 
-  screen4_left_default: `https://radar.kma.go.kr/cgi-bin/tablet2/nph-rdr_cmp_img?tm={T1}&cmp=HSP&qcd=HSO&obs=ECHD&map=HC&size=800&xp=-9999&yp=-9999&zoom=2&wv=02&ht=800&color=C4&topo=1&ZRa=&ZRb=&lat=&lon=&lonlat=0&x1=&y1=&x2=&y2=&center=0&typ=0&aws=01&wt=0`,
-  screen4_right_default: `https://radar.kma.go.kr/cgi-bin/tablet2/nph-rdr_cmp_img?tm={T1}&cmp=HSP&qcd=HSO&obs=ECHD&map=E&size=800&xp=330&yp=620&zoom=5&wv=02&ht=800&color=C4&topo=1&ZRa=&ZRb=&lat=&lon=&lonlat=0&x1=&y1=&x2=&y2=&center=0&typ=0&aws=01&wt=0`,
+  screen4_left_default: `https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?tm={T1}&cmp=HSP&qcd=HSO&obs=ECHD&map=HC&size=800&xp=-9999&yp=-9999&zoom=1&wv=00&ht=1500&color=C4&topo=1&ZRa=&ZRb=&lat=&lon=&lonlat=0&x1=&y1=&x2=&y2=&center=0&typ=0&aws=01&wt=0`,
+  screen4_right_default: `https://nmsc.kma.go.kr/IMG/GK2A/AMI/PRIMARY/L1B/COMPLETE/KO/{T3}/gk2a_ami_le1b_enhc-wv069_ko020lc_{T2}.srv.png`,
 
-  screen5_left_default: `https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?tm={T1}&cmp=HSP&qcd=HSO&obs=ECHD&map=HC&size=800&xp=-9999&yp=-9999&zoom=1&wv=00&ht=1500&color=C4&topo=1&ZRa=&ZRb=&lat=&lon=&lonlat=0&x1=&y1=&x2=&y2=&center=0&typ=0&aws=01&wt=0`,
-  screen5_right_default: `https://afso.kma.go.kr/cgi/rdr/nph-rdr_cmp1_img?tm={T1}&cmp=HSP&qcd=HSLP&obs=ECHD&color=C4&aws=0&acc=0&map=HB&grid=2&legend=1&size=700&itv=5&zoom_level=1&zoom_x=3300000&zoom_y=4200000&gov=`,
+  screen5_left_default: `https://radar.kma.go.kr/cgi-bin/tablet2/nph-rdr_cmp_img?tm={T1}&cmp=HSP&qcd=HSO&obs=ECHD&map=HC&size=800&xp=-9999&yp=-9999&zoom=2&wv=02&ht=800&color=C4&topo=1&ZRa=&ZRb=&lat=&lon=&lonlat=0&x1=&y1=&x2=&y2=&center=0&typ=0&aws=01&wt=0`,
+  screen5_right_default: `https://radar.kma.go.kr/cgi-bin/tablet2/nph-rdr_cmp_img?tm={T1}&cmp=HSP&qcd=HSO&obs=ECHD&map=E&size=800&xp=330&yp=620&zoom=5&wv=02&ht=800&color=C4&topo=1&ZRa=&ZRb=&lat=&lon=&lonlat=0&x1=&y1=&x2=&y2=&center=0&typ=0&aws=01&wt=0`,
+
+  screen6_left_default: `https://nmsc.kma.go.kr/IMG/GK2A/AMI/PRIMARY/L1B/COMPLETE/EA/{T10}/gk2a_ami_le1b_rgb-s-daynight_ea020lc_{T11}.png`,
+  screen6_right_default: `https://nmsc.kma.go.kr/IMG/GK2A/AMI/PRIMARY/L1B/COMPLETE/KO/{T12}/gk2a_ami_le1b_rgb-s-daynight_ko020lc_{T13}.png`,
 
   //태풍항목
   typoon1_left_default: `https://www.weather.go.kr/w/repositary/image/typ/sat/bt6_{T2}.png`,
@@ -142,10 +145,35 @@ function updateSlider(selectedTimeOverride, type = "change") {
  * 이미지 URL 생성기
  */
 function generateImageURL(time, url) {
-  //매시 5분 단위
   let now = new Date();
+
+  //매시 5분 단위
   if (url.includes("{T1}")) {
     url = url.replaceAll("{T1}", changeDateFormat(time, 1));
+  }
+
+  //매시 UTC 10분 단위 20분 딜레이
+  if (url.includes("{T10}") || url.includes("{T11}")) {
+    const DELAY = 10;
+    now = new Date(now - UTC_TIME);
+    time = new Date(time - UTC_TIME);
+
+    time.setMinutes(Math.floor(time.getMinutes() / 10) * 10);
+    if (now - time < DELAY * 60 * 1000) time.setMinutes(time.getMinutes() - 10);
+    url = url.replaceAll("{T10}", changeDateFormat(time, 2));
+    url = url.replaceAll("{T11}", changeDateFormat(time, 1));
+  }
+
+  //매시 UTC 10분 단위 3분 딜레이
+  if (url.includes("{T12}") || url.includes("{T13}")) {
+    const DELAY = 3;
+    now = new Date(now - UTC_TIME);
+    time = new Date(time - UTC_TIME);
+
+    time.setMinutes(Math.floor(time.getMinutes() / 10) * 10);
+    if (now - time < DELAY * 60 * 1000) time.setMinutes(time.getMinutes() - 10);
+    url = url.replaceAll("{T12}", changeDateFormat(time, 2));
+    url = url.replaceAll("{T13}", changeDateFormat(time, 1));
   }
 
   //9시간 이전 "50분"
@@ -215,12 +243,13 @@ function generateImageURL(time, url) {
   }
 
   if (url.includes("{T9}")) {
+    const DELAY = 10;
     const current = new Date(new Date() - UTC_TIME);
-    baseTime = new Date(new Date(time) - UTC_TIME);
+    time = new Date(new Date(time) - UTC_TIME);
 
-    // 이미지 생성시간 고려 10분이 안되었으면 1시간 전 이미지로 대신 노출
-    if (current - baseTime < 10 * 60 * 1000)
-      time = new Date(new Date(baseTime) - 60 * 60 * 1000);
+    // 이미지 생성시간 고려 10분이 안되었으면 1시간 전  00시 이미지로 대신 노출
+    if (current.getMinutes - time.getMinutes < DELAY)
+      time.setHours(Math.floor(time.getHours() - 1));
 
     url = url.replaceAll("{T9}", changeDateFormat(time, 3));
   }
@@ -333,6 +362,14 @@ function stopAutoUpdate() {
 }
 
 function setLatestTime() {
+  const now = new Date();
+  currentTime = new Date(now);
+  currentTime.setMinutes(Math.floor(currentTime.getMinutes() / 5) * 5);
+  currentTime.setSeconds(0);
+  currentTime.setMilliseconds(0);
+
+  selectedTime = new Date(currentTime);
+
   $datePicker.value = changeDateFormat();
   $timeSlider.value = 48;
   updateSlider();
@@ -353,7 +390,8 @@ function updateImages(time) {
     currentScreenIndex === 2 ||
     currentScreenIndex === 3 ||
     currentScreenIndex === 4 ||
-    currentScreenIndex === 5
+    currentScreenIndex === 5 ||
+    currentScreenIndex === 6
   ) {
     document.querySelector("#items").options[0].selected = true;
     document.querySelector("#typoons").options[0].selected = true;
