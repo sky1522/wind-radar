@@ -57,7 +57,7 @@ const baseImages = {
   typoon4_left_default:
     "https://data.kma.go.kr/CHT/EXTJ/{T6}/usst_korea_anal_{T5}.gif",
   typoon4_right_default:
-    "https://data.kma.go.kr/CHT/EXTJ/{T6}/usst_korea_anom_{T5}.gif",
+    "https://data.kma.go.kr/CHT/EXTJ/{T6}/usst_rdps_anom_{T5}.gif",
 
   typoon5_left_default:
     "https://www.weather.go.kr/w/repositary/image/cht/img/kim_surf_newsur_pa4_{T8}.gif",
