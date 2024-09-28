@@ -3,9 +3,15 @@
 const TYPOON1_SEQ = 14; //태풍 발생 호
 const TYPOON1_TIME = 202409171000; //태풍 발표 시각
 
+const TYPOON6_SEQ = 14; //태풍 발생 호
+const TYPOON6_TIME = 202409171000; //태풍 발표 시각
+
 //태풍예측
 const TYPOON2_NAME = "PULASAN"; //태풍 이름
 const TYPOON2_TIME = 2024091612; //태풍 발표 시각
+
+const TYPOON7_NAME = "PULASAN"; //태풍 이름
+const TYPOON7_TIME = 2024091612; //태풍 발표 시각
 // 사용자 하드 코딩 영역
 
 const UTC_TIME = 9 * 60 * 60 * 1000;
@@ -33,10 +39,10 @@ const baseImages = {
   screen2_right_default: `https://afso.kma.go.kr/cgi/rdr/nph-rdr_cmp1_img?tm={T1}&cmp=HSP&qcd=HSLP&obs=ECHD&color=C4&aws=0&acc=0&map=HB&grid=2&legend=1&size=700&itv=5&zoom_level=1&zoom_x=3300000&zoom_y=4200000&gov=`,
 
   screen3_left_default: `https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?tm={T1}&cmp=HSP&qcd=HSO&obs=ECHD&map=HC&size=800&xp=-9999&yp=-9999&zoom=1&wv=00&ht=1500&color=C4&topo=1&ZRa=&ZRb=&lat=&lon=&lonlat=0&x1=&y1=&x2=&y2=&center=0&typ=0&aws=01&wt=0`,
-  screen3_right_default: `https://nmsc.kma.go.kr/IMG/GK2A/AMI/PRIMARY/L1B/COMPLETE/KO/{T3}/gk2a_ami_le1b_rgb-s-daynight_ko020lc_{T2}.png`,
+  screen3_right_default: `https://nmsc.kma.go.kr/IMG/GK2A/AMI/PRIMARY/L1B/COMPLETE/KO/{T12}/gk2a_ami_le1b_rgb-s-daynight_ko020lc_{T13}.png`,
 
   screen4_left_default: `https://radar.kma.go.kr/cgi-bin/center/nph-rdr_cmp_img?tm={T1}&cmp=HSP&qcd=HSO&obs=ECHD&map=HC&size=800&xp=-9999&yp=-9999&zoom=1&wv=00&ht=1500&color=C4&topo=1&ZRa=&ZRb=&lat=&lon=&lonlat=0&x1=&y1=&x2=&y2=&center=0&typ=0&aws=01&wt=0`,
-  screen4_right_default: `https://nmsc.kma.go.kr/IMG/GK2A/AMI/PRIMARY/L1B/COMPLETE/KO/{T3}/gk2a_ami_le1b_enhc-wv069_ko020lc_{T2}.srv.png`,
+  screen4_right_default: `https://nmsc.kma.go.kr/IMG/GK2A/AMI/PRIMARY/L1B/COMPLETE/KO/{T12}/gk2a_ami_le1b_enhc-wv069_ko020lc_{T13}.srv.png`,
 
   screen5_left_default: `https://radar.kma.go.kr/cgi-bin/tablet2/nph-rdr_cmp_img?tm={T1}&cmp=HSP&qcd=HSO&obs=ECHD&map=HC&size=800&xp=-9999&yp=-9999&zoom=2&wv=02&ht=800&color=C4&topo=1&ZRa=&ZRb=&lat=&lon=&lonlat=0&x1=&y1=&x2=&y2=&center=0&typ=0&aws=01&wt=0`,
   screen5_right_default: `https://radar.kma.go.kr/cgi-bin/tablet2/nph-rdr_cmp_img?tm={T1}&cmp=HSP&qcd=HSO&obs=ECHD&map=E&size=800&xp=330&yp=620&zoom=5&wv=02&ht=800&color=C4&topo=1&ZRa=&ZRb=&lat=&lon=&lonlat=0&x1=&y1=&x2=&y2=&center=0&typ=0&aws=01&wt=0`,
@@ -48,21 +54,23 @@ const baseImages = {
   typoon1_left_default: `https://www.weather.go.kr/w/repositary/image/typ/sat/bt6_{T2}.png`,
   typoon1_right_default: `https://www.weather.go.kr/repositary/image/typ/img/RTKO63_${TYPOON1_TIME}]${TYPOON1_SEQ}_ko.png`,
 
+  typoon6_left_default: `https://www.weather.go.kr/w/repositary/image/typ/sat/bt6_{T2}.png`,
+  typoon6_right_default: `https://www.weather.go.kr/repositary/image/typ/img/RTKO63_${TYPOON6_TIME}]${TYPOON6_SEQ}_ko.png`,
+
   typoon2_left_default: `https://www.weather.go.kr/w/repositary/image/typ/monitor/kim_typh_fcst_wnd850_ft06_pa4_s000_{T4}.gif`,
   typoon2_right_default: `https://www.weather.go.kr/w/repositary/image/typ/monitor/kim_typh_fcst_wndshr_ft06_pa4_s000_{T4}.gif`,
 
   typoon3_left_default: `https://www.easterlywave.com/media/typhoon/ensemble/${TYPOON2_TIME}/${TYPOON2_NAME}.png`,
   typoon3_right_default: `https://www.typhoon2000.ph/multi/data/${TYPOON2_NAME}.PNG`,
 
-  typoon4_left_default:
-    "https://data.kma.go.kr/CHT/EXTJ/{T6}/usst_korea_anal_{T5}.gif",
-  typoon4_right_default:
-    "https://data.kma.go.kr/CHT/EXTJ/{T6}/usst_rdps_anal_{T5}.gif",
+  typoon7_left_default: `https://www.easterlywave.com/media/typhoon/ensemble/${TYPOON7_TIME}/${TYPOON7_NAME}.png`,
+  typoon7_right_default: `https://www.typhoon2000.ph/multi/data/${TYPOON7_NAME}.PNG`,
 
-  typoon5_left_default:
-    "https://www.weather.go.kr/w/repositary/image/cht/img/kim_surf_newsur_pa4_{T8}.gif",
-  typoon5_right_default:
-    "https://www.weather.go.kr/w/repositary/image/cht/img/kor1_anlmod_pb4_{T9}.gif",
+  typoon4_left_default: "https://data.kma.go.kr/CHT/EXTJ/{T6}/usst_korea_anal_{T5}.gif",
+  typoon4_right_default: "https://data.kma.go.kr/CHT/EXTJ/{T6}/usst_rdps_anal_{T5}.gif",
+
+  typoon5_left_default: "https://www.weather.go.kr/w/repositary/image/cht/img/kim_surf_newsur_pa4_{T8}.gif",
+  typoon5_right_default: "https://www.weather.go.kr/w/repositary/image/cht/img/kor1_anlmod_pb4_{T9}.gif",
 
   //항목 선택
   item1_left_default:
@@ -248,8 +256,7 @@ function generateImageURL(time, url) {
     time = new Date(new Date(time) - UTC_TIME);
 
     // 이미지 생성시간 고려 10분이 안되었으면 1시간 전  00시 이미지로 대신 노출
-    if (current.getMinutes() - time.getMinutes() < DELAY)
-      time.setHours(Math.floor(time.getHours() - 1));
+    if (current.getMinutes() - time.getMinutes() < DELAY) time.setHours(Math.floor(time.getHours() - 1));
 
     url = url.replaceAll("{T9}", changeDateFormat(time, 3));
   }
@@ -299,15 +306,7 @@ function togglePlay() {
 function getNextUpdateTime() {
   const now = new Date();
   const minutes = Math.floor(now.getMinutes() / 5) * 5;
-  const nextUpdate = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate(),
-    now.getHours(),
-    minutes,
-    0,
-    0
-  );
+  const nextUpdate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), minutes, 0, 0);
   nextUpdate.setMinutes(nextUpdate.getMinutes() + 4);
   nextUpdate.setSeconds(10);
   if (nextUpdate <= now) {
@@ -397,22 +396,18 @@ function updateImages(time) {
     document.querySelector("#typoons").options[0].selected = true;
     console.log("sc", currentScreenIndex);
     screen(
-      generateImageURL(
-        time,
-        baseImages[`screen${currentScreenIndex}_left_default`]
-      ),
-      generateImageURL(
-        time,
-        baseImages[`screen${currentScreenIndex}_right_default`]
-      )
+      generateImageURL(time, baseImages[`screen${currentScreenIndex}_left_default`]),
+      generateImageURL(time, baseImages[`screen${currentScreenIndex}_right_default`])
     );
     currentRightSrc = baseImages[`screen${currentScreenIndex}_right_default`];
   }
 
   if (
     currentScreenIndex === "TP1" ||
+    currentScreenIndex === "TP6" ||
     currentScreenIndex === "TP2" ||
     currentScreenIndex === "TP3" ||
+    currentScreenIndex === "TP7" ||
     currentScreenIndex === "TP4" ||
     currentScreenIndex === "TP5"
   ) {
@@ -420,17 +415,10 @@ function updateImages(time) {
     console.log("tp", currentScreenIndex);
 
     screen(
-      generateImageURL(
-        time,
-        baseImages[`typoon${currentScreenIndex.substr(2)}_left_default`]
-      ),
-      generateImageURL(
-        time,
-        baseImages[`typoon${currentScreenIndex.substr(2)}_right_default`]
-      )
+      generateImageURL(time, baseImages[`typoon${currentScreenIndex.substr(2)}_left_default`]),
+      generateImageURL(time, baseImages[`typoon${currentScreenIndex.substr(2)}_right_default`])
     );
-    currentRightSrc =
-      baseImages[`typoon${currentScreenIndex.substr(2)}_right_default`];
+    currentRightSrc = baseImages[`typoon${currentScreenIndex.substr(2)}_right_default`];
   }
 
   if (
@@ -449,10 +437,7 @@ function updateImages(time) {
 
     console.log("currentRightSrc", currentRightSrc);
     screen(
-      generateImageURL(
-        time,
-        baseImages[`item${currentScreenIndex.substr(4)}_left_default`]
-      ),
+      generateImageURL(time, baseImages[`item${currentScreenIndex.substr(4)}_left_default`]),
       generateImageURL(time, currentRightSrc)
     );
   }
