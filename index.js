@@ -96,7 +96,7 @@ const baseImages = {
 
   // 항목정보 두화면 변경시
   dual1_left_default: `https://www.weather.go.kr/w/repositary/image/typ/sat/bt6_{T2}.png`,
-  dual1_right_default: `https://www.weather.go.kr/repositary/image/typ/img/RTKO63_${TYPOON1_TIME}]${TYPOON1_SEQ}_ko.png`,
+  dual1_right_default: `https://www.weather.go.kr/w/repositary/image/typ/sat/bt6_{T2}.png`,
 };
 
 //화면 1~4 클릭시 기본화면으로 리셋
