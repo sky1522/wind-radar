@@ -93,6 +93,10 @@ const baseImages = {
     "https://afso.kma.go.kr/cgi/aws3/nph-aws_min_img1?obs=ta&tm={T1}&val=1&stn=1&obj=mq&map=E&grid=2&legend=1&size=495.00&itv=5&zoom_level=2&zoom_x=3200000&zoom_y=5400000&gov=&_DT=RSW:TA",
   item10_left_default:
     "https://afso.kma.go.kr/cgi/aws3/nph-aws_min_img1?obs=ta_chi&tm={T1}&val=1&stn=1&obj=mq&map=E&grid=2&legend=1&size=495.00&itv=5&zoom_level=2&zoom_x=3200000&zoom_y=5400000&gov=&_DT=RSW:TACHIdf",
+
+  // 항목정보 두화면 변경시
+  dual1_left_default: `https://www.weather.go.kr/w/repositary/image/typ/sat/bt6_{T2}.png`,
+  dual1_right_default: `https://www.weather.go.kr/repositary/image/typ/img/RTKO63_${TYPOON1_TIME}]${TYPOON1_SEQ}_ko.png`,
 };
 
 //화면 1~4 클릭시 기본화면으로 리셋
@@ -251,12 +255,13 @@ function generateImageURL(time, url) {
   }
 
   if (url.includes("{T9}")) {
-    const DELAY = 10;
+    const DELAY = 30;
     const current = new Date(new Date() - UTC_TIME);
     time = new Date(new Date(time) - UTC_TIME);
 
     // 이미지 생성시간 고려 10분이 안되었으면 1시간 전  00시 이미지로 대신 노출
-    if (current.getMinutes() - time.getMinutes() < DELAY) time.setHours(Math.floor(time.getHours() - 1));
+    console.log("🚀 ~ generateImageURL ~ current.getMinutes():", current.getMinutes());
+    if (current.getMinutes() < DELAY) time.setHours(time.getHours() - 1);
 
     url = url.replaceAll("{T9}", changeDateFormat(time, 3));
   }
@@ -419,6 +424,15 @@ function updateImages(time) {
       generateImageURL(time, baseImages[`typoon${currentScreenIndex.substr(2)}_right_default`])
     );
     currentRightSrc = baseImages[`typoon${currentScreenIndex.substr(2)}_right_default`];
+  }
+
+  // 항목정보 두 화면 변경시
+  if (currentScreenIndex === "dual1") {
+    screen(
+      generateImageURL(time, baseImages[`dual${currentScreenIndex.substr(4)}_left_default`]),
+      generateImageURL(time, baseImages[`dual${currentScreenIndex.substr(4)}_right_default`])
+    );
+    currentRightSrc = baseImages[`dual${currentScreenIndex.substr(4)}_right_default`];
   }
 
   if (
