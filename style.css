@@ -1,6 +1,6 @@
 :root {
   --pico-font-family: "Monaco";
-  --pico-font-size: 80%;
+  --pico-font-size: 70%;
   --pico-border-radius: 0.5rem;
   --pico-form-element-spacing-vertical: 0.5rem;
   --pico-form-element-spacing-horizontal: 1rem;
@@ -75,7 +75,7 @@ main {
 }
 
 .range {
-  width: 200px;
+  width: 170px;
 }
 
 .control {
@@ -111,6 +111,8 @@ main {
 
 button.outline {
   background-color: white;
+  width: 45px; /* 버튼의 폭 줄이기 */
+  font-size: 12px; /* 글씨 크기 줄이기 */
 }
 
 footer {
@@ -123,7 +125,7 @@ footer {
 }
 
 footer small {
-  font-size: 11px;
+  font-size: 12px;
   display: flex;
   justify-content: space-between;
 }
@@ -131,13 +133,15 @@ footer small {
 footer fieldset {
   display: inline-block;
   margin: 0;
-  width: 130px;
+  width: 120px;
 }
 
 footer > div input[type="datetime-local"] {
-  width: 205px;
-  font-size: 11px;
+  width: 180px;
+  font-size: 12px;
+  text-align: center; /* 텍스트를 가운데로 정렬 */
 }
+
 
 footer > div input:not([type="checkbox"], [type="radio"]),
 select,
@@ -162,7 +166,7 @@ footer [type="button"],
 }
 
 footer button.outline {
-  padding-left: 2px;
+  padding-left: 5px;
   padding-right: 2px;
 }
 
@@ -186,5 +190,60 @@ footer button.outline {
 
   #screen {
     display: block;
+  }
+}
+
+select {
+  text-align: left;
+  width: 95px; /* 원하는 너비로 설정 */
+}
+
+.widget-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap; /* 추가 위젯을 한 줄에 3개씩 배치하기 위해 필요한 설정 */
+}
+
+.widget {
+  flex: 0 0 calc(32% - 10px); /* 32%로 수정 (3개 위젯이 한 줄에 들어가도록) */
+  /*margin: 10px;*/
+  margin: 0px;
+}
+
+.widget iframe {
+  /*width: 100%;*/
+  width: 850px;
+  height: 850px;
+  border: 0;
+}
+
+/* 2024.10.23 모바일 > screen 설정 */
+@media screen and (max-width: 600px) {
+    footer.center {
+        width: 100%;
+    }
+}
+
+/* 2024.10.23 모바일 > #widget-fore5 iframe  설정 */
+@media screen and (max-width: 600px) {
+  #widget-fore5 iframe {
+    width: 430px;
+    height: 800px;
+  }
+  #widget-fore9 iframe {
+    width: 430px;
+    height: 800px;
+  }
+  #widget-fore10 iframe {
+    width: 430px;
+    height: 800px;
+  }
+  #widget-fore11 iframe {
+    width: 430px;
+    height: 800px;
+  }
+  #widget-fore12 iframe {
+    width: 430px;
+    height: 800px;
   }
 }
