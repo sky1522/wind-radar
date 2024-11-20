@@ -50,6 +50,7 @@ const $screenRight = document.querySelector("#screenRight img");
 const $datePicker = document.querySelector("#datePicker");
 const $timeSlider = document.querySelector("#timeSlider");
 const dateStr = changeDateFormat(null, 4);
+const dateStr1 = changeDateFormat(null, 5);
 
 //태풍 시간 1
 function generateTUrl() {
@@ -80,7 +81,7 @@ function generateTUrl() {
     const day = `${String(currentDate.getDate()).padStart(2, '0')}`;
     const timeSuffix = `${String(lastUpdateHour).padStart(2, '0')}00`;
 
-    const url = `https://dmdw.kma.go.kr/data/IDS/IMG/${yearMonth}/${day}/RTKO63_108_${yearMonth}${day}${timeSuffix}_22_1.png`;
+    const url = `https://dmdw.kma.go.kr/data/IDS/IMG/${yearMonth}/${day}/RTKO63_108_${yearMonth}${day}${timeSuffix}_24_1.png`;
     return url;
 }
 
@@ -116,7 +117,7 @@ function generateT1Url() {
     const day = `${String(currentDate.getDate()).padStart(2, '0')}`;
     const timeSuffix = `${String(lastUpdateHour).padStart(2, '0')}30`; // 30분에 해당하는 이미지
 
-    const url = `https://dmdw.kma.go.kr/data/IDS/IMG/${yearMonth}/${day}/RTKO63_108_${yearMonth}${day}${timeSuffix}_23_1.png`;
+    const url = `https://dmdw.kma.go.kr/data/IDS/IMG/${yearMonth}/${day}/RTKO63_108_${yearMonth}${day}${timeSuffix}_24_1.png`;
     return url;
 }
 
@@ -222,21 +223,21 @@ const baseImages = {
     typoon3_right_default: `https://www.typhoon2000.ph/multi/data/${TYPOON2_NAME}.PNG`,
 
     typoon6_left_default: `https://www.weather.go.kr/w/repositary/image/typ/sat/bt6_{T2}.png`,
-    typoon6_right_default: generateT1Url(),
+    typoon6_right_default: generateTUrl(),
     //typoon6_right_default: `https://dmdw.kma.go.kr/data/IDS/IMG/${dateStr}/RTKO64_108_${TYPOON3_TIME}_${TYPOON3_SEQ}_1.png`,
 
     typoon7_left_default: `https://www.weather.go.kr/w/repositary/image/typ/cht/typh_muti_prob_pb4_middl_24${TYPOON4_SEQ}_{T8}.gif`,
     typoon7_right_default: `https://www.typhoon2000.ph/multi/data/${TYPOON4_NAME}.PNG`,
 
     typoon11_left_default: `https://www.weather.go.kr/w/repositary/image/typ/sat/bt6_{T2}.png`,
-    typoon11_right_default: generateT2Url(),
+    typoon11_right_default: generateTUrl(),
     //typoon6_right_default: `https://dmdw.kma.go.kr/data/IDS/IMG/${dateStr}/RTKO64_108_${TYPOON3_TIME}_${TYPOON3_SEQ}_1.png`,
 
     typoon12_left_default: `https://www.weather.go.kr/w/repositary/image/typ/cht/typh_muti_prob_pb4_middl_24${TYPOON6_SEQ}_{T8}.gif`,
     typoon12_right_default: `https://www.typhoon2000.ph/multi/data/${TYPOON6_NAME}.PNG`,
 
     typoon13_left_default: `https://www.weather.go.kr/w/repositary/image/typ/sat/bt6_{T2}.png`,
-    typoon13_right_default: generateT3Url(),
+    typoon13_right_default: generateTUrl(),
     //typoon6_right_default: `https://dmdw.kma.go.kr/data/IDS/IMG/${dateStr}/RTKO64_108_${TYPOON3_TIME}_${TYPOON3_SEQ}_1.png`,
 
     typoon14_left_default: `https://www.weather.go.kr/w/repositary/image/typ/cht/typh_muti_prob_pb4_middl_24${TYPOON7_SEQ}_{T8}.gif`,
@@ -329,8 +330,10 @@ const baseImages = {
     fore6_right_default: `./meteogram (1).png`,
     fore7_left_default: `./meteogram_14day.png`,
     fore7_right_default: `./meteogram_14day (1).png`,
-    fore8_left_default: `https://www.apcc21.org/apcc_images/MME_FIG/MME_OUT/3-MON/FORECAST/SCM/2024/11/Seasonal/NDJ/East_asia/t2m.png`,
-    fore8_right_default: `https://www.apcc21.org/apcc_images/MME_FIG/MME_OUT/3-MON/FORECAST/SCM/2024/11/Seasonal/NDJ/East_asia/prec.png`,
+    fore8_left_default: `https://www.apcc21.org/apcc_images/MME_FIG/MME_OUT/3-MON/FORECAST/GAUS/2024/12/Seasonal/DJF/East_asia/t2m.png`,
+    fore8_right_default: `https://www.apcc21.org/apcc_images/MME_FIG/MME_OUT/3-MON/FORECAST/GAUS/2024/12/Seasonal/DJF/East_asia/prec.png`,
+    fore13_left_default: `https://afso.kma.go.kr/afsOut/rsw/cht/retChtSvrImgView.kfrm?cmdType=VIEW&tm=${dateStr1}&dirName=/DATA/CHT/GDPS/&fileName=gdps_lc20_fxkorh_{T8}.gif`,
+    fore13_right_default: `https://afso.kma.go.kr/afsOut/rsw/cht/retChtSvrImgView.kfrm?cmdType=VIEW&tm=${dateStr1}&dirName=/DATA/CHT/LDPS/&fileName=ldps_l1p5_fxko4s1_{T8}.gif`,
 };
 
 $(document).ready(function () {
@@ -403,6 +406,7 @@ function changeDateFormat(date, format = 0) {
     if (format === 2) return `${year}${month}/${day}/${hours}`;
     if (format === 3) return `${year}${month}${day}${hours}`;
     if (format === 4) return `${year}${month}/${day}`;
+    if (format === 5) return `${year}${month}${day}`;
 }
 
 //현재까지 선택된 시간 데이터 기준으로 슬라이드/시간/이미지 업데이트
@@ -720,7 +724,7 @@ function updateImages(time) {
         screen(generateImageURL(time, baseImages[`item${currentScreenIndex.substr(4)}_left_default`]), generateImageURL(time, currentRightSrc));
     }
 
-    if (currentScreenIndex === "fore6"|| currentScreenIndex === "fore7"|| currentScreenIndex === "fore8") {
+    if (currentScreenIndex === "fore6"|| currentScreenIndex === "fore7"|| currentScreenIndex === "fore8"|| currentScreenIndex === "fore13") {
         $('#select-fore').find('option:selected');
         screen(generateImageURL(time, baseImages[`${currentScreenIndex}_left_default`]), generateImageURL(time, baseImages[`${currentScreenIndex}_right_default`]));
     }
@@ -781,7 +785,7 @@ function init() {
 
 init();
 
-/*
+
 // 마우스 우클릭 방지
 document.addEventListener('contextmenu', function (e) {
     e.preventDefault();
@@ -813,4 +817,3 @@ document.addEventListener('keydown', function (e) {
 document.addEventListener('dragstart', function (e) {
     e.preventDefault();
 }, false);
-*/
