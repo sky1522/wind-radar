@@ -233,7 +233,7 @@ const baseImages = {
     weather5_right_default: `https://afso.kma.go.kr/cgi/aws3/nph-aws_min_img1?obs=frg&tm={T1}&val=1&stn=1&obj=mq&map=HC&grid=2&legend=1&size=495.00&itv=5&zoom_level=2&zoom_x=3350000&zoom_y=5120000&gov=&_DT=`,
     // 누적강수량(1H)    
     weather6_left_default: `https://afso.kma.go.kr/cgi/aws3/nph-aws_min_img1?obs=rn_60m&tm={T1}&val=1&stn=1&obj=mq&map=HB&grid=2&legend=1&size=495.00&itv=60&zoom_level=2&zoom_x=4000000&zoom_y=2000000&gov=&_DT=RSW:RN60M`,
-    weather6_right_default: `https://afso.kma.go.kr/cgi/aws3/nph-aws_min_img1?obs=rn_60m&tm={T1}&val=1&stn=1&obj=mq&map=HC&grid=2&legend=1&size=495.00&itv=60&zoom_level=2&zoom_x=3350000&zoom_y=5120000&gov=&_DT=RSW:RN60M`,
+    weather6_right_default: `https://afso.kma.go.kr/cgi/aws3/nph-aws_min_img1?obs=rn_60m&tm={T1}&val=1&stn=1&obj=mq&map=HC&grid=2&legend=1&size=495.00&itv=60&zoom_level=2&zoom_x=3350000&zoom_y=4130000&gov=&_DT=RSW:RN60M`,
     // 누적강수량(3H)
     weather7_left_default: `https://afso.kma.go.kr/cgi/aws3/nph-aws_min_img1?obs=rn_03h&tm={T1}&stn=1&obj=bn&map=HB&grid=2&legend=1&size=495.00&itv=5&zoom_level=2&zoom_x=4000000&zoom_y=2000000&gov=&_DT=RSW:RN03H`,
     weather7_right_default: `https://afso.kma.go.kr/cgi/aws3/nph-aws_min_img1?obs=rn_03h&tm={T1}&stn=1&obj=bn&map=HC&grid=2&legend=1&size=495.00&itv=5&zoom_level=2&zoom_x=3350000&zoom_y=5120000&gov=&_DT=RSW:RN03H`,
